@@ -1,0 +1,83 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Super Bot G · D7 DJ 2077</title>
+<style>
+html,body{margin:0;height:100%;background:#05010a;color:#fff;font:15px system-ui,sans-serif;overflow:hidden}
+#viz{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+#ui{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;pointer-events:none}
+header{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#0008;pointer-events:auto}
+header b{font:900 20px system-ui;background:linear-gradient(90deg,#ff2bd6,#ffd23f,#00f0ff);-webkit-background-clip:text;color:transparent;letter-spacing:1px}
+header a{color:#0ff;text-decoration:none}
+#stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+#devil{width:min(78vw,380px);height:auto;filter:drop-shadow(0 0 18px #ff2bd6aa)}
+#log{max-height:26vh;overflow:auto;margin:0 10px;padding:6px 10px;background:#000a;border-radius:10px;pointer-events:auto;font-size:14px}
+#log .g{color:#ffd23f}#log .u{color:#8ff}
+#bar{display:flex;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));pointer-events:auto;flex-wrap:wrap}
+#bar input{flex:1 1 160px;padding:10px;border-radius:10px;border:1px solid #ff2bd6;background:#111c;color:#fff;font-size:15px}
+#bar button,#bar select{padding:9px 11px;border:0;border-radius:10px;background:#2a0c3a;color:#fff;font-weight:700}
+#bar .hot{background:linear-gradient(90deg,#ff2bd6,#ff7a00)}
+#src{max-width:150px}
+</style></head><body>
+<canvas id="viz"></canvas>
+<div id="ui">
+<header><b>😈 SUPER BOT G · 2077</b><span id="st" style="font-size:12px;opacity:.8">offline-ready</span><a href="index.html">◀ D7 DJ</a></header>
+<div id="stage">
+<svg id="devil" viewBox="0 0 400 420" xmlns="http://www.w3.org/2000/svg" aria-label="Super Bot G — oryginalny diabeł-kosmita">
+ <defs>
+  <radialGradient id="skin" cx=".45" cy=".35" r=".7"><stop offset="0" stop-color="#ff5a7a"/><stop offset=".6" stop-color="#c0164a"/><stop offset="1" stop-color="#5a0630"/></radialGradient>
+  <linearGradient id="gold" x1="0" x2="1"><stop offset="0" stop-color="#fff2a8"/><stop offset=".5" stop-color="#e7a91b"/><stop offset="1" stop-color="#8a5a00"/></linearGradient>
+  <linearGradient id="lens" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00f0ff"/><stop offset=".5" stop-color="#5a00ff"/><stop offset="1" stop-color="#ff2bd6"/></linearGradient>
+  <linearGradient id="tub" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f0ff"/><stop offset="1" stop-color="#8b7fb0"/></linearGradient>
+ </defs>
+ <!-- horns -->
+ <path d="M120 120 Q70 40 105 10 Q110 70 160 100Z" fill="#2b0a1a" stroke="#ffd23f" stroke-width="3"/>
+ <path d="M280 120 Q330 40 295 10 Q290 70 240 100Z" fill="#2b0a1a" stroke="#ffd23f" stroke-width="3"/>
+ <!-- body/shoulders -->
+ <path d="M90 330 Q100 250 200 245 Q300 250 310 330Z" fill="url(#skin)"/>
+ <!-- chains -->
+ <path d="M135 262 Q200 330 265 262" fill="none" stroke="url(#gold)" stroke-width="9" stroke-dasharray="10 4" stroke-linecap="round"/>
+ <path d="M150 262 Q200 305 250 262" fill="none" stroke="url(#gold)" stroke-width="6" stroke-dasharray="7 3"/>
+ <text x="200" y="322" text-anchor="middle" font-size="26" font-weight="900" fill="url(#gold)">G</text>
+ <!-- head: wide alien-devil skull -->
+ <g id="head">
+ <ellipse cx="200" cy="165" rx="105" ry="98" fill="url(#skin)"/>
+ <ellipse cx="200" cy="105" rx="70" ry="22" fill="#ff8aa6" opacity=".25"/>
+ <!-- aviator shades -->
+ <path d="M95 150 Q100 135 190 140 Q195 190 150 198 Q100 200 95 150Z" fill="url(#lens)" stroke="url(#gold)" stroke-width="5"/>
+ <path d="M305 150 Q300 135 210 140 Q205 190 250 198 Q300 200 305 150Z" fill="url(#lens)" stroke="url(#gold)" stroke-width="5"/>
+ <path d="M188 147 Q200 140 212 147" stroke="url(#gold)" stroke-width="5" fill="none"/>
+ <path id="glint" d="M115 152 L150 148" stroke="#fff" stroke-width="4" opacity=".7" stroke-linecap="round"/>
+ <!-- mouth -->
+ <g transform="translate(200 225)">
+  <ellipse id="mouth" cx="0" cy="0" rx="42" ry="6" fill="#1a0010" stroke="#ffd23f" stroke-width="3"/>
+  <path d="M-30 -4 L-24 6 L-18 -4Z M18 -4 L24 6 L30 -4Z" fill="#fff" id="fangs"/>
+ </g>
+ <!-- goatee -->
+ <path d="M185 248 Q200 285 215 248Z" fill="#2b0a1a"/>
+ <!-- neon cig (bubble pipe) -->
+ <line x1="236" y1="228" x2="290" y2="238" stroke="#e0f" stroke-width="6" stroke-linecap="round"/><circle cx="292" cy="238" r="5" fill="#ff0" id="ember"/>
+ </g>
+ <!-- rings on hand with retro phone -->
+ <g transform="translate(330 250) rotate(18)">
+  <rect x="-22" y="-60" width="44" height="80" rx="10" fill="#111" stroke="#00f0ff" stroke-width="3"/>
+  <rect x="-15" y="-50" width="30" height="22" fill="#00f0ff" opacity=".6"/>
+  <circle cx="-12" cy="22" r="14" fill="url(#skin)"/><circle cx="-12" cy="14" r="5" fill="none" stroke="url(#gold)" stroke-width="4"/>
+ </g>
+ <!-- bubble bath tub -->
+ <path d="M40 320 H360 Q352 410 300 412 H100 Q48 410 40 320Z" fill="url(#tub)"/>
+ <rect x="30" y="310" width="340" height="18" rx="9" fill="#fff"/>
+ <g id="bubbles" fill="#fff" opacity=".9">
+  <circle cx="70" cy="306" r="22"/><circle cx="110" cy="298" r="26"/><circle cx="150" cy="308" r="20"/><circle cx="250" cy="306" r="24"/><circle cx="290" cy="296" r="28"/><circle cx="335" cy="306" r="20"/><circle cx="200" cy="312" r="18"/>
+ </g>
+ <text x="200" y="385" text-anchor="middle" font-size="22" font-weight="900" fill="#5a0630">D7 · 2077</text>
+</svg>
+</div>
+<div id="log"></div>
+<div id="bar">
+ <input id="q" placeholder="Pogadaj z G… (np. „zagraj techno”, „co tam?”)" autocomplete="off">
+ <button class="hot" id="send">➤</button><button id="mic">🎤</button>
+ <select id="src"><option value="radio">📻 Radio techno</option><option value="mic">🎤 Mikrofon</option><option value="demo">🎛 Beat demo</option></select>
+ <button id="go">▶ Wizualizacja</button><button id="next">🌀 Preset</button><button id="mute">🔊</button>
+</div></div>
+<script src="libs/butterchurn.min.js"></script><script src="libs/butterchurnPresets.min.js"></script>
+<script src="js/superbotg.js?v=52"></script>
+</body></html>

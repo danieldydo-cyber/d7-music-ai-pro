@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pl"><head><script src="js/d7-token.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>D7 DJ · X7S v51 · Daniel Dydo · Kraków</title>
+<meta name="sx-version" content="51"><link rel="icon" href="favicon.png"><link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--bg:#05060c;--panel:#0e1020;--line:#2a2d4a;--txt:#e9e6ff;--acc:#00e5ff;--acc2:#b84dff;--ok:#8dff6a;--bad:#ff4d6d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:15px system-ui,sans-serif}
+header{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+header h1{font-size:18px;margin:0;background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;color:transparent}
+nav{display:flex;gap:6px;flex-wrap:wrap}nav button,.btn{background:#171a33;color:var(--txt);border:1px solid var(--line);border-radius:999px;padding:7px 12px;cursor:pointer;font:600 13px system-ui}
+nav button.on,.btn.pri{background:linear-gradient(90deg,var(--acc),var(--acc2));color:#05060c;border:0}
+section{display:none;padding:12px 14px}section.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+#viz{width:100%;height:56vh;display:block;border-radius:14px;background:#000}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}input,select,textarea{background:#090b18;color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:8px}
+#stations{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;max-height:52vh;overflow:auto}
+.st{background:#12152a;border:1px solid var(--line);border-radius:10px;padding:8px;cursor:pointer}.st:hover{border-color:var(--acc)}.st small{opacity:.7;display:block}
+#log{height:46vh;overflow:auto;display:flex;flex-direction:column;gap:6px}.m{padding:8px 11px;border-radius:12px;max-width:85%;white-space:pre-wrap}.m.me{align-self:flex-end;background:#1d2b55}.m.bot{background:#1a1230}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--bad)}.dot.ok{background:var(--ok)}
+table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--line);padding:6px;text-align:left;font-size:13px}
+#np{font-weight:700;color:var(--acc)}
+</style></head><body>
+<header><h1>D7 DJ · X7S v51</h1><small>Daniel Dydo · Kraków</small>
+<nav id="tabs"><button data-t="viz" class="on">✨ Wizualizacja</button><button data-t="radio">📻 Radio</button><button data-t="chat">💬 Czat D</button><button data-t="builder">🧩 Bot Builder</button><button data-t="sync">🔄 Sync</button><a class="btn" href="index.html">🏠 Główna</a><a class="btn" href="downloads/D7-DJ-v51.apk">⬇ APK v51</a></nav></header>
+
+<section id="s-viz" class="on"><div class="card"><canvas id="viz"></canvas>
+<div class="row" style="margin-top:8px"><button class="btn pri" id="vNext">⏭ Następny preset</button><button class="btn" id="vRand">🎲 Losowy</button><label><input type="checkbox" id="vAuto" checked> auto co <input id="vSec" type="number" value="20" min="5" style="width:60px">s</label><button class="btn" id="vMic">🎤 Mikrofon</button><button class="btn" id="vFs">⛶ Pełny ekran</button><select id="vList" style="max-width:320px"></select></div>
+<p id="vInfo" style="opacity:.75;font-size:13px"></p></div></section>
+
+<section id="s-radio"><div class="card"><div class="row"><span id="np">— nic nie gra —</span><button class="btn" id="rStop">⏹ Stop</button><input type="range" id="rVol" min="0" max="1" step="0.05" value="0.8"></div></div>
+<div class="card"><div class="row"><button class="btn pri" data-q="pl">🇵🇱 Polskie</button><button class="btn" data-q="curated">⭐ Kuratorskie</button><button class="btn" data-q="tag:techno">Techno</button><button class="btn" data-q="tag:trance">Trance</button><button class="btn" data-q="tag:house">House</button><button class="btn" data-q="tag:hip-hop">Hip-hop</button><button class="btn" data-q="tag:chillout">Chill</button><button class="btn" data-q="tag:drum and bass">DnB</button><button class="btn" data-q="top">🌍 Top świat</button>
+<input id="rQ" placeholder="Szukaj stacji / kraju…"><button class="btn" id="rGo">🔎</button></div><p id="rInfo" style="font-size:13px;opacity:.75"></p><div id="stations"></div></div></section>
+
+<section id="s-chat"><div class="card"><div class="row"><label>Bot: <select id="cBot"></select></label><label>Język: <select id="cLang"><option value="auto">AUTO</option><option value="pl">Polski</option><option value="en">English</option><option value="de">Deutsch</option><option value="uk">Українська</option><option value="es">Español</option><option value="fr">Français</option></select></label></div>
+<div id="log" style="margin-top:8px"></div><form id="cForm" class="row" style="margin-top:8px"><input id="cIn" style="flex:1" placeholder="Napisz / Write / Schreib… (np. pomoc, radio, bpm, 12*7)"><button class="btn pri">➤</button></form></div></section>
+
+<section id="s-builder"><div class="card"><h3>🧩 Bot Builder</h3><div class="row"><input id="bName" placeholder="Nazwa bota"><input id="bIcon" placeholder="Ikona 🤖" style="width:70px"><select id="bLang"><option value="auto">AUTO</option><option value="pl">PL</option><option value="en">EN</option><option value="de">DE</option><option value="uk">UK</option><option value="es">ES</option><option value="fr">FR</option></select></div>
+<p><input id="bPersona" style="width:100%" placeholder="Osobowość / prefiks odpowiedzi (np. „Ziomal DJ z Krakowa:”)"></p>
+<p><textarea id="bRules" rows="6" style="width:100%" placeholder="Reguły, jedna na linię:  pytanie => odpowiedź"></textarea></p>
+<div class="row"><button class="btn pri" id="bSave">💾 Zapisz bota</button><button class="btn" id="bExport">⬇ Eksport JSON</button><label class="btn">⬆ Import<input type="file" id="bImport" accept=".json" hidden></label></div>
+<table style="margin-top:10px"><thead><tr><th>Bot</th><th>Język</th><th>Reguły</th><th></th></tr></thead><tbody id="bTable"></tbody></table></div></section>
+
+<section id="s-sync"><div class="card"><h3>🧠 Pamięć · Google</h3><div id="syAcc">…</div></div>
+<div class="card"><h3>🤝 Multi-bot sync (bot-mesh)</h3><div class="row"><button class="btn pri" id="syRefresh">🔄 Odśwież</button><span id="syAt" style="opacity:.7;font-size:13px"></span></div><table><thead><tr><th>Bot</th><th>Status</th><th>Ostatnio</th></tr></thead><tbody id="syMesh"></tbody></table></div>
+<div class="card"><h3>📦 Wydanie</h3><div id="syMan">…</div></div></section>
+
+<script src="libs/butterchurn.min.js?v=51"></script><script src="libs/butterchurnPresets.min.js?v=51"></script><script src="libs/butterchurnPresetsExtra.min.js?v=51"></script>
+<script src="js/d7-answers.js?v=51"></script><script src="js/d7-v51.js?v=51"></script>
+</body></html>

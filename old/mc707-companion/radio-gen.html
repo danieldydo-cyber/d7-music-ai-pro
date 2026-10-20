@@ -1,0 +1,27 @@
+<script src="js/d7-token.js"></script><!doctype html><html lang="pl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D7 Radio + Techno Generator</title>
+<style>body{background:#05060a;color:#cfe;font-family:system-ui;margin:0;padding:12px}button,select{background:#123;color:#9fe;border:1px solid #2a6;border-radius:8px;padding:8px 12px;margin:4px}canvas{width:100%;height:180px;background:#000;border-radius:10px}h2{color:#3fc}</style>
+<h2>📻 Radio (zweryfikowane strumienie)</h2>
+<select id=st><option value="https://ice2.somafm.com/defcon-128-mp3">SomaFM DEF CON (techno/elektronika)</option><option value="https://ice2.somafm.com/beatblender-128-mp3">SomaFM Beat Blender</option><option value="https://ice2.somafm.com/groovesalad-128-mp3">SomaFM Groove Salad</option><option value="https://ice2.somafm.com/fluid-128-mp3">SomaFM Fluid</option><option value="https://stream.radioparadise.com/mp3-128">Radio Paradise</option></select>
+<button id=rp>▶ Radio</button><button id=rs>⏹</button> <span id=rst></span>
+<h2>🎛 Generator techno (WebAudio, bez sieci)</h2>
+BPM <input id=bpm type=range min=110 max=150 value=128> <span id=bv>128</span>
+<button id=gp>▶ Generuj</button><button id=gs>⏹</button><button id=gr>🎲 Nowy wzór</button>
+<h2>🌈 Wizualizer</h2><canvas id=cv></canvas>
+<script>
+var $=function(i){return document.getElementById(i)},ac,an,master,au,timer,step=0,next=0,pat;
+function init(){if(ac)return;ac=new(window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=.8;an=ac.createAnalyser();an.fftSize=1024;master.connect(an);an.connect(ac.destination);draw()}
+$('rp').onclick=function(){init();if(!au){au=new Audio();au.crossOrigin='anonymous';try{ac.createMediaElementSource(au).connect(master)}catch(e){}}
+ au.src=$('st').value;$('rst').textContent='łączę…';au.play().then(function(){$('rst').textContent='gra ✅'}).catch(function(){au.crossOrigin=null;au.src=$('st').value;au.play().then(function(){$('rst').textContent='gra (wizualizer tylko dla generatora)'}).catch(function(e){$('rst').textContent='błąd strumienia: '+e.message})})};
+$('rs').onclick=function(){if(au){au.pause();au.src='';$('rst').textContent='stop'}};
+function rnd(p){return Math.random()<p}
+function newPat(){pat={k:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,rnd(.3)?1:0,0],h:[],c:[],b:[],n:[36,36,39,41,43][Math.random()*5|0]};for(var i=0;i<16;i++){pat.h.push(i%4==2||rnd(.25)?1:0);pat.c.push(i==4||i==12?1:0);pat.b.push(rnd(.45)?[0,0,3,7,12,10][Math.random()*6|0]+1:0)}}
+newPat();
+function kick(t){var o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(40,t+.12);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);o.connect(g);g.connect(master);o.start(t);o.stop(t+.4)}
+var nb;function noise(t,d,f,v){if(!nb){nb=ac.createBuffer(1,ac.sampleRate,ac.sampleRate);var x=nb.getChannelData(0);for(var i=0;i<x.length;i++)x[i]=Math.random()*2-1}var s=ac.createBufferSource(),h=ac.createBiquadFilter(),g=ac.createGain();s.buffer=nb;h.type='highpass';h.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);s.connect(h);h.connect(g);g.connect(master);s.start(t);s.stop(t+d)}
+function bass(t,n,d){var o=ac.createOscillator(),f=ac.createBiquadFilter(),g=ac.createGain();o.type='sawtooth';o.frequency.value=440*Math.pow(2,(n-69)/12);f.type='lowpass';f.Q.value=12;f.frequency.setValueAtTime(1800,t);f.frequency.exponentialRampToValueAtTime(200,t+d);g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(f);f.connect(g);g.connect(master);o.start(t);o.stop(t+d)}
+function sched(){var sp=60/$('bpm').value/4;while(next<ac.currentTime+.1){var i=step%16;if(pat.k[i])kick(next);if(pat.h[i])noise(next,.05,7000,.3);if(pat.c[i])noise(next,.2,1500,.5);if(pat.b[i])bass(next,pat.n+pat.b[i]-1,sp*.9);next+=sp;step++}}
+$('gp').onclick=function(){init();ac.resume();if(timer)return;next=ac.currentTime+.05;timer=setInterval(sched,25)};
+$('gs').onclick=function(){clearInterval(timer);timer=null};$('gr').onclick=newPat;$('bpm').oninput=function(){$('bv').textContent=this.value};
+function draw(){var c=$('cv'),x=c.getContext('2d'),d=new Uint8Array(an.frequencyBinCount),w=c.width=c.clientWidth,h=c.height=180;(function f(){requestAnimationFrame(f);an.getByteFrequencyData(d);x.fillStyle='rgba(0,0,0,.25)';x.fillRect(0,0,w,h);var n=128,bw=w/n;for(var i=0;i<n;i++){var v=d[i]/255;x.fillStyle='hsl('+(180+i*1.5+performance.now()/30)%360+',90%,'+(30+v*40)+'%)';x.fillRect(i*bw,h-v*h,bw-1,v*h)}})()}
+</script></html>

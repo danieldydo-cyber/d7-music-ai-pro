@@ -1,0 +1,5 @@
+/* D7 admin token shim: adds X-Admin-Token (localStorage d7.tok) to same-origin /api/ calls; degrades silently on 401. */
+(function(){if(window.__d7tok)return;window.__d7tok=1;var F=window.fetch;if(!F)return;
+window.fetch=function(u,o){try{var s=typeof u=='string'?u:(u&&u.url)||'';var a=new URL(s,location.href);
+ if(a.origin==location.origin&&a.pathname.indexOf('/api/')==0){var t=localStorage.getItem('d7.tok');if(t){o=o||{};var h=new Headers(o.headers||(typeof u!='string'&&u.headers)||{});h.set('X-Admin-Token',t);o.headers=h}}}catch(e){}
+ return F.call(this,u,o)}})();

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#000000"/>
+<meta name="description" content="DD DJ 7777777 — Trance Radio ~120 + psychodeliczne visuale. Daniel Dydo / Kraków."/>
+<title>DD DJ 7777777 · Trance · PSY PRO FINAL</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  width:100%;height:100%;width:100vw;height:100vh;height:100dvh;
+  background:#000;overflow:hidden;overscroll-behavior:none;
+  font-family:system-ui,sans-serif;color:#fff;
+  touch-action:manipulation;-webkit-user-select:none;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#stage{position:fixed;inset:0;background:#000}
+#c{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;background:#000}
+#gate{
+  position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  background:radial-gradient(ellipse at 50% 40%,rgba(60,0,80,.5),rgba(0,0,0,.78));
+  border:0;cursor:pointer;width:100%;height:100%;padding:20px;
+}
+body.live #gate{display:none!important}
+#gate .logo{
+  font:900 clamp(1.35rem,5.5vw,2.1rem)/1.05 system-ui;letter-spacing:.08em;text-align:center;
+  background:linear-gradient(90deg,#ff2bd6,#8b5cff,#2de2ff,#ff8a3d);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+#gate .sub{opacity:.8;font:500 .88rem/1.45 system-ui;text-align:center;max-width:20rem}
+#gate .cta{
+  margin-top:8px;padding:1.05rem 1.55rem;border-radius:999px;
+  font:800 .95rem/1 system-ui;letter-spacing:.1em;text-transform:uppercase;
+  color:#10081a;background:linear-gradient(90deg,#ff2bd6,#7c5cff,#2de2ff);
+  box-shadow:0 0 42px rgba(255,43,214,.55);
+}
+#toast{
+  position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);
+  z-index:20;opacity:0;transition:opacity .6s;pointer-events:none;text-align:center;
+  font:600 .62rem system-ui;letter-spacing:.14em;text-transform:uppercase;text-shadow:0 0 12px #000;
+}
+#toast.show{opacity:.75}
+#src{
+  position:fixed;left:max(10px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));
+  z-index:25;display:none;gap:6px;
+}
+body.live #src{display:flex}
+#src button{
+  border:0;border-radius:999px;padding:.5rem .75rem;font:700 .65rem system-ui;letter-spacing:.05em;
+  color:#fff;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);
+}
+#src button.on{background:linear-gradient(90deg,rgba(255,43,214,.55),rgba(45,226,255,.45))}
+#err{
+  position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);
+  z-index:40;display:none;max-width:92vw;padding:.55rem .85rem;border-radius:10px;
+  background:rgba(40,0,16,.94);color:#ffd6ea;font:500 .85rem system-ui;text-align:center;
+}
+#err.show{display:block}
+#meter{
+  position:fixed;left:50%;top:max(10px,env(safe-area-inset-top));transform:translateX(-50%);
+  z-index:15;display:none;gap:3px;align-items:flex-end;height:18px;opacity:.35;pointer-events:none;
+}
+body.live #meter{display:flex}
+#meter i{display:block;width:3px;height:4px;border-radius:1px;background:#fff}
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="c"></canvas></div>
+<button id="gate" type="button">
+  <div class="logo">DD DJ 7777777</div>
+  <div class="sub">Trance radio ~120 · psychodeliczne visuale · sync<br/>Daniel Dydo · Kraków</div>
+  <div class="cta">Start · Fullscreen</div>
+</button>
+<div id="meter" aria-hidden="true"></div>
+<div id="src">
+  <button type="button" id="btnTrance" class="on">Trance</button>
+  <button type="button" id="btnKali">Kali</button>
+</div>
+<div id="toast">TRANCE · PSY · LIVE</div>
+<div id="err"></div>
+<audio id="a" playsinline webkit-playsinline></audio>
+<script>
+(function(){
+"use strict";
+const isHttp = location.protocol==="http:"||location.protocol==="https:";
+const TRANCE = isHttp ? [location.origin+"/trance-stream"] : [];
+const KALI = isHttp
+  ? [location.origin+"/kali-stream", location.origin+"/kali-aac", "https://ice5.securenetsystems.net/KALI"]
+  : ["https://ice5.securenetsystems.net/KALI"];
+
+const stage=document.getElementById("stage");
+const canvas=document.getElementById("c");
+const gate=document.getElementById("gate");
+const errBox=document.getElementById("err");
+const toast=document.getElementById("toast");
+const meter=document.getElementById("meter");
+const audio=document.getElementById("a");
+const btnTrance=document.getElementById("btnTrance");
+const btnKali=document.getElementById("btnKali");
+
+for(let i=0;i<24;i++){ const el=document.createElement("i"); meter.appendChild(el); }
+const meterBars=[].slice.call(meter.children);
+
+let gl,prog,buf,uni={};
+let actx,gain,srcNode,analyser,freq,wave;
+let started=false,raf=0,t0=performance.now();
+let bass=0,mid=0,tre=0,energy=0,beatEnv=0;
+let mode=0, modeT=0, channel="trance";
+
+audio.setAttribute("playsinline","");
+audio.setAttribute("webkit-playsinline","");
+
+function showErr(t){ errBox.textContent=t; errBox.classList.add("show"); }
+function clearErr(){ errBox.classList.remove("show"); }
+function setChannelUI(){
+  btnTrance.classList.toggle("on", channel==="trance");
+  btnKali.classList.toggle("on", channel==="kali");
+  toast.textContent = channel==="trance" ? "TRANCE ~120 · PSY · LIVE" : "KALI RADIO · PSY · LIVE";
+}
+
+function sz(){
+  const vv=window.visualViewport;
+  return {
+    w:Math.max(1,Math.floor(Math.max((vv&&vv.width)||0,innerWidth||0,document.documentElement.clientWidth||0))),
+    h:Math.max(1,Math.floor(Math.max((vv&&vv.height)||0,innerHeight||0,document.documentElement.clientHeight||0)))
+  };
+}
+function resize(){
+  const {w,h}=sz();
+  const dpr=Math.min(devicePixelRatio||1,2);
+  const bw=Math.floor(w*dpr), bh=Math.floor(h*dpr);
+  stage.style.width=w+"px"; stage.style.height=h+"px";
+  canvas.style.width=w+"px"; canvas.style.height=h+"px";
+  if(canvas.width!==bw||canvas.height!==bh){
+    canvas.width=bw; canvas.height=bh;
+    if(gl) gl.viewport(0,0,bw,bh);
+  }
+}
+
+const VERT=`attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}`;
+const FRAG=`precision highp float;
+uniform vec2 uR; uniform float uT,uB,uM,uTr,uE,uBeat,uMode;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){
+  vec2 i=floor(p),f=fract(p);
+  float a=hash(i),b=hash(i+vec2(1.,0.)),c=hash(i+vec2(0.,1.)),d=hash(i+vec2(1.,1.));
+  vec2 u=f*f*(3.-2.*f);
+  return mix(a,b,u.x)+(c-a)*u.y*(1.-u.x)+(d-b)*u.x*u.y;
+}
+float fbm(vec2 p){ float v=0.,a=.5; for(int i=0;i<5;i++){ v+=a*noise(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return v; }
+vec3 pal(float t,vec3 a,vec3 b,vec3 c,vec3 d){return a+b*cos(6.28318*(c*t+d));}
+mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+void main(){
+  vec2 uv=(gl_FragCoord.xy-.5*uR)/min(uR.x,uR.y);
+  float t=uT,b=uB,m=uM,tr=uTr,e=uE,bt=uBeat;
+  float md=mod(floor(uMode),3.0);
+  vec2 p=uv*rot(t*.08+b*.4);
+  float seg=6.+floor(b*5.);
+  float ang=atan(p.y,p.x), rad=length(p);
+  float ka=abs(mod(ang,6.28318/seg)-3.14159/seg);
+  vec2 k=vec2(cos(ka),sin(ka))*rad;
+  float r=length(k)+1e-4;
+  float tunnel=1./(r+.12+b*.3);
+  vec2 q=k*(.55+b*.5)+.12*vec2(sin(t*.7+m*2.),cos(t*.55));
+  q+=.08*bt*vec2(sin(ang*3.),cos(ang*2.));
+  float n=fbm(q*2.5+t*.15), n2=fbm(q*5.-t*.25+n);
+  float plasma=sin(q.x*9.+t*1.8+b*7.)+sin(q.y*8.-t*1.4)+sin((q.x+q.y)*6.+t+m*4.);
+  plasma=plasma*.12+n*.5+n2*.28;
+  float rings=pow(sin(r*(26.+tr*20.)-t*5.-b*12.-bt*8.)*.5+.5, 2.2+tr*2.5);
+  float fractal=fbm(vec2(ang*1.5,tunnel*.35+t*.2));
+  float v=plasma*(.6+.4*e)+rings*(.2+.45*b)+fractal*.18;
+  if(md<0.5) v+=.15*sin(tunnel*4.+t*2.+m*6.);
+  else if(md<1.5) v=mix(v,fbm(k*rot(t*.3)*4.+t*.1),.35+m*.3);
+  else v=mix(v,sin(ang*8.+r*18.-t*3.-b*6.)*.5+.5,.4);
+  vec3 col=pal(v+t*.04+bt*.1, vec3(.45,.3,.55),vec3(.55,.4,.5),vec3(1.,.85,.65),vec3(.05,.2,.4));
+  col=mix(col, pal(v+b, vec3(.6,.15,.4),vec3(.5,.35,.45),vec3(1.,.7,.45),vec3(.15,.35,.6)), .4+m*.35);
+  float glow=exp(-r*(2.4-b*1.3-bt*.8));
+  col+=vec3(1.,.3,.9)*glow*(.2+b*.85+bt*.5);
+  col+=vec3(.15,.9,1.)*pow(rings,3.2)*(.12+tr*.55);
+  col+=vec3(1.,.7,.25)*pow(bt,1.5)*exp(-r*6.)*.55;
+  col+=(hash(gl_FragCoord.xy+t)-.5)*.035;
+  col*=smoothstep(1.4,.15,r);
+  col=pow(max(col,0.),vec3(.88));
+  col=mix(vec3(dot(col,vec3(.299,.587,.114))),col,1.15);
+  gl_FragColor=vec4(col,1.);
+}`;
+
+function compile(type,src){
+  const s=gl.createShader(type); gl.shaderSource(s,src); gl.compileShader(s);
+  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){ console.error(gl.getShaderInfoLog(s)); return null; }
+  return s;
+}
+function initGL(){
+  gl=canvas.getContext("webgl",{alpha:false,antialias:false,powerPreference:"high-performance"});
+  if(!gl) return false;
+  const vs=compile(gl.VERTEX_SHADER,VERT), fs=compile(gl.FRAGMENT_SHADER,FRAG);
+  if(!vs||!fs) return false;
+  prog=gl.createProgram(); gl.attachShader(prog,vs); gl.attachShader(prog,fs); gl.linkProgram(prog);
+  if(!gl.getProgramParameter(prog,gl.LINK_STATUS)) return false;
+  buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  uni={R:gl.getUniformLocation(prog,"uR"),T:gl.getUniformLocation(prog,"uT"),B:gl.getUniformLocation(prog,"uB"),
+    M:gl.getUniformLocation(prog,"uM"),Tr:gl.getUniformLocation(prog,"uTr"),E:gl.getUniformLocation(prog,"uE"),
+    Beat:gl.getUniformLocation(prog,"uBeat"),Mode:gl.getUniformLocation(prog,"uMode")};
+  return true;
+}
+
+function sample(){
+  const t=(performance.now()-t0)/1000;
+  if(!analyser||!freq){
+    bass=.3+.25*Math.sin(t*2); mid=.25+.2*Math.sin(t*1.4+1); tre=.2+.15*Math.sin(t*3); energy=.35; beatEnv*=.95; return;
+  }
+  analyser.getByteFrequencyData(freq);
+  analyser.getByteTimeDomainData(wave);
+  const n=freq.length;
+  let B=0,M=0,Tr=0,E=0;
+  const nB=Math.max(1,n*0.07|0), nM=Math.max(nB+1,n*0.32|0), nT=Math.max(nM+1,n*0.65|0);
+  for(let i=0;i<nB;i++) B+=freq[i];
+  for(let i=nB;i<nM;i++) M+=freq[i];
+  for(let i=nM;i<nT;i++) Tr+=freq[i];
+  for(let i=0;i<n;i++) E+=freq[i];
+  B/=nB*255; M/=(nM-nB)*255; Tr/=(nT-nM)*255; E/=n*255;
+  bass=bass*.78+B*.22; mid=mid*.82+M*.18; tre=tre*.8+Tr*.2; energy=energy*.84+E*.16;
+  const onset=Math.max(0,B-(bass*.92));
+  if(onset>0.08) beatEnv=Math.min(1,beatEnv+onset*3.5);
+  beatEnv*=0.92;
+  for(let i=0;i<meterBars.length;i++){
+    const v=freq[Math.floor(i*(n*0.45)/meterBars.length)]/255;
+    meterBars[i].style.height=Math.max(3,Math.floor(v*18))+"px";
+    meterBars[i].style.opacity=String(0.25+v*0.75);
+  }
+  modeT+=0.016; if(modeT>18){ modeT=0; mode=(mode+1)%3; }
+}
+
+function render(){
+  raf=requestAnimationFrame(render);
+  resize(); sample();
+  if(!gl||!prog) return;
+  const t=(performance.now()-t0)/1000;
+  gl.viewport(0,0,canvas.width,canvas.height);
+  gl.useProgram(prog);
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  const loc=gl.getAttribLocation(prog,"a");
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  gl.uniform2f(uni.R,canvas.width,canvas.height);
+  gl.uniform1f(uni.T,t); gl.uniform1f(uni.B,bass); gl.uniform1f(uni.M,mid);
+  gl.uniform1f(uni.Tr,tre); gl.uniform1f(uni.E,energy); gl.uniform1f(uni.Beat,beatEnv); gl.uniform1f(uni.Mode,mode);
+  gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+}
+
+async function goFS(){
+  try{
+    const el=stage;
+    if(!(document.fullscreenElement||document.webkitFullscreenElement)){
+      if(el.requestFullscreen) await el.requestFullscreen({navigationUI:"hide"});
+      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if(document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen({navigationUI:"hide"});
+    }
+  }catch(e){}
+  resize();
+}
+async function unlock(){
+  actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  if(actx.state==="suspended") await actx.resume();
+  try{ const b=actx.createBuffer(1,1,22050); const s=actx.createBufferSource(); s.buffer=b; s.connect(actx.destination); s.start(0);}catch(e){}
+}
+function setupGraph(){
+  if(srcNode) return;
+  gain=actx.createGain(); gain.gain.value=1;
+  analyser=actx.createAnalyser(); analyser.fftSize=2048; analyser.smoothingTimeConstant=.72;
+  freq=new Uint8Array(analyser.frequencyBinCount);
+  wave=new Uint8Array(analyser.fftSize);
+  srcNode=actx.createMediaElementSource(audio);
+  srcNode.connect(gain); gain.connect(actx.destination); gain.connect(analyser);
+}
+function playAttempt(url,cors){
+  return new Promise(async (resolve,reject)=>{
+    try{
+      audio.pause();
+      if(cors) audio.crossOrigin="anonymous"; else audio.removeAttribute("crossorigin");
+      audio.src=url+(url.indexOf("?")>=0?"&":"?")+"t="+Date.now();
+      let done=false;
+      const cleanup=()=>{audio.removeEventListener("error",onErr);audio.removeEventListener("playing",onPlay);};
+      const onErr=()=>{if(done)return;done=true;cleanup();reject(new Error("err"));};
+      const onPlay=()=>{if(done)return;done=true;cleanup();resolve(url);};
+      audio.addEventListener("error",onErr); audio.addEventListener("playing",onPlay);
+      const p=audio.play(); if(p&&p.then) await p;
+      setTimeout(()=>{if(!done&&audio.paused){done=true;cleanup();reject(new Error("paused"));}},12000);
+    }catch(e){reject(e);}
+  });
+}
+async function playChannel(ch){
+  channel=ch; setChannelUI();
+  const streams = ch==="trance" ? (TRANCE.length?TRANCE:KALI) : KALI;
+  let ok=false,last=null;
+  for(const url of streams){
+    for(const cors of [true,false]){
+      try{ await playAttempt(url,cors); ok=true; break; }catch(e){ last=e; }
+    }
+    if(ok) break;
+  }
+  if(!ok) throw last||new Error("stream");
+  toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),3000);
+}
+
+async function start(){
+  if(started){ await goFS(); resize(); return; }
+  started=true; clearErr(); document.body.classList.add("live");
+  await goFS();
+  try{
+    await unlock(); setupGraph();
+    if(!gl) initGL();
+    if(!raf) render();
+    await playChannel("trance");
+    const re=()=>{ showErr("Reconnect…"); playChannel(channel).then(clearErr).catch(()=>{}); };
+    audio.onended=re; audio.onerror=re;
+  }catch(e){
+    console.error(e); started=false; document.body.classList.remove("live");
+    showErr("Dotknij ponownie — Start Fullscreen.");
+  }
+}
+
+function arm(el,fn){
+  let lock=false;
+  const run=(ev)=>{ if(lock) return; lock=true; if(ev&&ev.preventDefault) ev.preventDefault(); try{fn();} finally{ setTimeout(()=>lock=false,400);} };
+  el.addEventListener("touchend", run, {passive:false});
+  el.addEventListener("click", run);
+}
+arm(gate, start);
+arm(btnTrance, async ()=>{ if(!started) return; try{ await playChannel("trance"); clearErr(); }catch(e){ showErr("Trance fail"); }});
+arm(btnKali, async ()=>{ if(!started) return; try{ await playChannel("kali"); clearErr(); }catch(e){ showErr("Kali fail"); }});
+stage.addEventListener("dblclick", ()=>{ goFS(); resize(); });
+stage.addEventListener("click", ()=>{ if(started){ mode=(mode+1)%3; modeT=0; }});
+stage.addEventListener("touchend", (e)=>{
+  if(started && !(document.fullscreenElement||document.webkitFullscreenElement)){ e.preventDefault(); goFS(); resize(); }
+},{passive:false});
+
+document.addEventListener("fullscreenchange", resize);
+document.addEventListener("webkitfullscreenchange", resize);
+window.addEventListener("resize", resize);
+window.addEventListener("orientationchange", ()=>setTimeout(resize,250));
+if(window.visualViewport) visualViewport.addEventListener("resize", resize);
+
+resize();
+if(initGL()) render();
+})();
+</script>
+</body>
+</html>

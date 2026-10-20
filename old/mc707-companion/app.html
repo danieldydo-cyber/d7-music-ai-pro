@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pl"><head><script src="js/d7-token.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>D7 DJ ONE · Daniel Dydo · Kraków</title><meta name="sx-version" content="54"><link rel="icon" href="favicon.png">
+<style>
+:root{--bg:#05060c;--p:#0e1020;--l:#2a2d4a;--t:#e9e6ff;--a:#00e5ff;--b:#b84dff;--ok:#8dff6a;--bad:#ff4d6d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:15px system-ui,sans-serif}
+header{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--l);flex-wrap:wrap;position:sticky;top:0;background:#05060cee;z-index:5}
+h1{font-size:17px;margin:0 8px 0 0;background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;color:transparent}
+nav{display:flex;gap:5px;flex-wrap:wrap}.btn,nav button{background:#171a33;color:var(--t);border:1px solid var(--l);border-radius:999px;padding:7px 11px;cursor:pointer;font:600 13px system-ui;text-decoration:none}
+nav button.on,.pri{background:linear-gradient(90deg,var(--a),var(--b))!important;color:#05060c!important;border:0!important}
+section{display:none;padding:12px}section.on{display:block}
+.card{background:var(--p);border:1px solid var(--l);border-radius:14px;padding:12px;margin-bottom:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}input,select,textarea{background:#090b18;color:var(--t);border:1px solid var(--l);border-radius:10px;padding:7px}
+.decks{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:760px){.decks{grid-template-columns:1fr}}
+.deck h3{margin:0 0 6px}.wave{width:100%;height:70px;background:#000;border-radius:8px;display:block}
+.pads{display:grid;grid-template-columns:repeat(16,1fr);gap:3px}.pad{height:26px;border-radius:5px;background:#1b1e38;cursor:pointer}.pad.on{background:var(--b)}.pad.cur{outline:2px solid var(--a)}
+#viz{width:100%;height:56vh;display:block;border-radius:14px;background:#000}
+#stations{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;max-height:52vh;overflow:auto}.st{background:#12152a;border:1px solid var(--l);border-radius:10px;padding:8px;cursor:pointer}.st small{opacity:.7;display:block}
+#log{height:48vh;overflow:auto;display:flex;flex-direction:column;gap:6px}.m{padding:8px 11px;border-radius:12px;max-width:85%;white-space:pre-wrap}.m.me{align-self:flex-end;background:#1d2b55}.m.bot{background:#1a1230}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--bad)}.dot.ok{background:var(--ok)}
+table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--l);padding:5px;text-align:left;font-size:13px}
+#np,#midiSt{color:var(--a);font-weight:700}#mini{position:fixed;right:10px;bottom:10px;background:#0e1020ee;border:1px solid var(--l);border-radius:12px;padding:6px 10px;font-size:12px;z-index:6}
+iframe{width:100%;height:75vh;border:1px solid var(--l);border-radius:14px;background:#000}
+</style></head><body>
+<header><h1>D7 DJ ONE</h1><nav id="tabs">
+<button data-t="dj" class="on">🎧 DJ + MC-707</button><button data-t="viz">✨ MilkDrop</button><button data-t="radio">📻 Radio</button><button data-t="chat">💬 Boty</button><button data-t="builder">🧩 Builder</button><button data-t="sync">🔄 Sync</button><button data-t="super">🚀 Super App</button></nav></header>
+
+<section id="s-dj" class="on">
+<div class="card row"><b>Master</b> BPM <input id="mBpm" type="number" value="120" min="60" max="200" step="0.1" style="width:80px"><button class="btn" id="tap">TAP</button>
+X-fader A<input id="xf" type="range" min="0" max="1" step="0.01" value="0.5">B · Vol<input id="mVol" type="range" min="0" max="1" step="0.01" value="0.9">
+<span>MIDI: <span id="midiSt">—</span></span><button class="btn" id="midiOn">🎹 Połącz MC-707</button><label><input type="checkbox" id="clkOut"> wysyłaj Clock</label><label><input type="checkbox" id="clkIn" checked> sync z Clock</label><select id="midiOut"></select></div>
+<div class="decks"><div class="card deck" id="deckA"></div><div class="card deck" id="deckB"></div></div>
+<div class="card" id="proDj"></div>
+<div class="card"><div class="row"><b>🔁 Loop / beat 16-step</b><button class="btn pri" id="seqPlay">▶ Beat</button><select id="seqKit"><option>techno</option><option>house</option><option>hiphop</option><option>trance</option></select><label>vol <input id="seqVol" type="range" min="0" max="1" step="0.01" value="0.6"></label><button class="btn" id="seqClr">wyczyść</button></div>
+<div id="seq" style="margin-top:8px"></div></div>
+</section>
+
+<section id="s-viz"><div class="card"><canvas id="viz"></canvas><div class="row" style="margin-top:8px"><button class="btn pri" id="vNext">⏭ Preset</button><button class="btn" id="vRand">🎲</button><label><input type="checkbox" id="vAuto" checked> auto <input id="vSec" type="number" value="20" min="5" style="width:56px">s</label><button class="btn" id="vMic">🎤 Mikrofon</button><button class="btn" id="vFs">⛶</button><select id="vList" style="max-width:300px"></select></div><p id="vInfo" style="opacity:.75;font-size:13px"></p></div></section>
+
+<section id="s-radio"><div class="card row"><span id="np">— radio stop —</span><button class="btn" id="rStop">⏹</button>vol<input type="range" id="rVol" min="0" max="1" step="0.05" value="0.8"></div>
+<div class="card"><div class="row"><button class="btn pri" data-q="pl">🇵🇱 Polskie</button><button class="btn" data-q="curated">⭐ Kuratorskie</button><button class="btn" data-q="tag:techno">Techno</button><button class="btn" data-q="tag:trance">Trance</button><button class="btn" data-q="tag:house">House</button><button class="btn" data-q="tag:hip-hop">Hip-hop</button><button class="btn" data-q="tag:chillout">Chill</button><button class="btn" data-q="tag:drum and bass">DnB</button><button class="btn" data-q="top">🌍 Top</button><input id="rQ" placeholder="Szukaj…"><button class="btn" id="rGo">🔎</button></div><p id="rInfo" style="font-size:13px;opacity:.75"></p><div id="stations"></div></div></section>
+
+<section id="s-chat"><div class="card"><div class="row"><select id="cBot"></select><select id="cLang"><option value="auto">AUTO</option><option value="pl">Polski</option><option value="en">English</option><option value="de">Deutsch</option><option value="uk">Українська</option><option value="es">Español</option><option value="fr">Français</option></select><span id="cSrc" style="opacity:.7;font-size:12px"></span></div>
+<div id="quick" class="row" style="margin-top:8px"></div><div id="group" class="row" style="margin-top:6px"></div><div id="log" style="margin-top:8px"></div><form id="cForm" class="row" style="margin-top:8px"><input id="cIn" style="flex:1" placeholder="Napisz / Write… (pomoc, radio, bpm, 12*7, status)"><button class="btn pri">➤</button></form></div></section>
+
+<section id="s-builder"><div class="card"><div class="row"><input id="bName" placeholder="Nazwa bota"><input id="bIcon" placeholder="🤖" style="width:60px"><select id="bLang"><option value="auto">AUTO</option><option value="pl">PL</option><option value="en">EN</option><option value="de">DE</option><option value="uk">UK</option><option value="es">ES</option><option value="fr">FR</option></select></div>
+<p><input id="bPersona" style="width:100%" placeholder="Osobowość / prefiks"></p><p><textarea id="bRules" rows="5" style="width:100%" placeholder="pytanie => odpowiedź (jedna na linię)"></textarea></p>
+<div class="row"><button class="btn pri" id="bSave">💾 Zapisz</button><button class="btn" id="bExport">⬇ JSON</button><label class="btn">⬆ Import<input type="file" id="bImport" accept=".json" hidden></label></div>
+<table style="margin-top:8px"><tbody id="bTable"></tbody></table></div></section>
+
+<section id="s-sync"><div class="card"><h3>🧠 Pamięć · Google · backend</h3><div id="syAcc">…</div></div><div class="card"><h3>🤝 Multi-bot sync</h3><div class="row"><button class="btn pri" id="syRefresh">🔄</button><span id="syAt" style="font-size:13px;opacity:.7"></span></div><table><tbody id="syMesh"></tbody></table></div><div class="card"><h3>📦 Wydanie</h3><div id="syMan"></div></div></section>
+
+<section id="s-super"><div class="row" style="margin-bottom:8px"><a class="btn" href="superapp.html" target="_blank">↗ superapp.html</a><a class="btn" href="index.html">🎛 PRO8 index</a><a class="btn" href="pro-dj.html">💿 Pro DJ</a><a class="btn" href="kali-live.html">📻 Kali Live</a><a class="btn" href="d/index.html">👽 D site</a></div><iframe id="superFrame" data-src="superapp.html" title="D7 Super App"></iframe></section>
+<div id="mini">ONE v54 · <span id="miniNet">…</span></div>
+<script src="libs/butterchurn.min.js?v=52"></script><script src="libs/butterchurnPresets.min.js?v=52"></script><script src="libs/butterchurnPresetsExtra.min.js?v=52"></script>
+<script src="js/d7-answers.js?v=52"></script><script src="js/one.js?v=54"></script><script src="js/one-pro.js?v=54"></script>
+</body></html>

@@ -1,0 +1,92 @@
+<!doctype html><html lang="pl"><head><script src="js/d7-token.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D7 SUPER APP FULL</title><link rel="manifest" href="/superapp.webmanifest"><meta name="theme-color" content="#00f0ff"><link rel="icon" href="/icons/icon-192.png"><link rel="apple-touch-icon" href="/icons/icon-180.png">
+<style>
+:root{--bg:#07070b;--p:#11111bdd;--n:#00f0ff;--m:#ff2bd6;--g:#39ff88;--t:#d8d8ea}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:15px/1.4 'Segoe UI',system-ui,sans-serif;min-height:100vh}
+#viz{position:fixed;inset:0;z-index:-1;opacity:.55}
+header{padding:12px 18px;border-bottom:1px solid #222;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;background:#07070bcc;backdrop-filter:blur(6px)}
+h1{margin:0;font-size:21px;letter-spacing:4px;background:linear-gradient(90deg,var(--n),var(--m));-webkit-background-clip:text;color:transparent}
+main{display:grid;grid-template-columns:270px 1fr 320px;gap:12px;padding:12px}@media(max-width:1000px){main{grid-template-columns:1fr}}
+.c{background:var(--p);border:1px solid #23233a;border-radius:12px;padding:12px;box-shadow:0 0 18px #00f0ff14;margin-bottom:12px}
+h2{font-size:12px;letter-spacing:3px;color:var(--n);margin:0 0 8px;text-transform:uppercase}
+.bot{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;margin:2px 0}.bot:hover,.bot.on{background:#1d1d33;box-shadow:inset 3px 0 var(--m)}
+.av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:15px;flex:none;box-shadow:0 0 10px currentColor}
+.sub{font-size:12px;opacity:.7;padding:1px 0 1px 44px;cursor:pointer}.sub:hover,.sub.on{color:var(--n);opacity:1}
+#log{height:52vh;overflow:auto;display:flex;flex-direction:column;gap:8px}.msg{padding:8px 11px;border-radius:10px;max-width:88%;white-space:pre-wrap;word-break:break-word}
+.u{align-self:flex-end;background:#2a0f3a}.a{background:#0d2730;border-left:3px solid var(--n)}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}#grid .msg{max-width:none;font-size:13px}
+form{display:flex;gap:6px;margin-top:8px}input,select{background:#0b0b14;border:1px solid #333;color:var(--t);padding:10px;border-radius:9px}input#q{flex:1}
+button{background:linear-gradient(90deg,var(--n),var(--m));border:0;color:#000;font-weight:700;padding:8px 12px;border-radius:9px;cursor:pointer}
+button.g{background:#1d1d33;color:var(--t);border:1px solid #333;font-weight:500}button.rec{background:var(--m)}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+a{color:var(--n);text-decoration:none}a:hover{color:var(--m)}.k{opacity:.65;font-size:12px}td{padding:2px 4px;font-size:13px}
+.tabs button{margin-right:4px}.hide{display:none}#qr{width:150px;background:#07070b;border-radius:8px}
+#acts button{padding:5px 8px;font-size:12px}
+</style></head><body><canvas id="viz"></canvas>
+<header><h1>D7 · SUPER APP FULL</h1><div class="row"><span id="tgt" class="k">bot: D</span>
+<label class="k"><input type="checkbox" id="tts"> 🔊 TTS</label><select id="lang"><option value="">auto</option><option value="pl">PL</option><option value="en">EN</option><option value="de">DE</option><option value="uk">UK</option></select>
+<button class="g" id="inst" style="display:none">⬇ Instaluj</button><a href="/app.html" class="k">🎛 App ONE</a> <a href="/D7-SuperApp.apk" class="k">📱 APK</a></div></header>
+<main>
+<div><div class="c"><h2>Boty</h2><div id="bots"></div><div class="bot" id="allbtn"><div class="av" style="color:#fff;background:#333">⚡</div><b>Wszystkie boty</b></div></div>
+<div class="c"><h2>DJ Apps</h2><div id="links" class="row"></div></div></div>
+<div><div class="c"><div class="row tabs"><button class="g" data-t="chat">💬 Chat</button><button class="g" data-t="all">⚡ Wszystkie (obok siebie)</button><span style="flex:1"></span>
+<button class="g" id="exp">⬇ Eksport</button><button class="g" id="clr">🗑 Wyczyść lokalnie</button></div>
+<div id="t-chat"><div id="log"></div></div><div id="t-all" class="hide"><div id="grid"></div></div>
+<form id="f"><button type="button" class="g" id="mic" title="Głos">🎤</button><input id="q" placeholder="Napisz do bota… (pomoc = lista komend)" autocomplete="off"><button>Wyślij</button></form></div>
+<div class="c"><h2>Aktywność (wiadomości / 10 min)</h2><canvas id="act" height="90" style="width:100%"></canvas><div class="k" id="stats"></div></div></div>
+<div><div class="c"><h2>🔑 Token admina</h2><input id="tok" type="password" placeholder="token (akcje 🔒)" style="width:100%"><div class="k" id="tokst"></div>
+<h2 style="margin-top:12px">Akcje</h2><div id="acts" class="row"></div></div>
+<div class="c"><h2>Status</h2><table id="st"></table><div class="row" style="margin-top:8px"><img id="qr" alt="QR"><div class="k">Zeskanuj, by otworzyć live URL na telefonie</div></div></div>
+<div class="c"><h2>Beat / BPM</h2><div class="row"><b id="bpm" style="font-size:22px;color:var(--m)">128</b> BPM <button class="g" id="tap">TAP</button><button class="g" id="micviz">🎧 Mic</button></div></div>
+<div class="c"><h2>Relay → boty 🔒</h2><div id="relay" class="k" style="max-height:150px;overflow:auto"></div></div></div>
+</main><script>
+var $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+var LOOK={supergrok:['🦾','#00f0ff'],d:['🎧','#ff2bd6'],superbotd:['🎛','#7b2cff'],autofix:['🛠','#39ff88'],dragon:['🐉','#ff6a00'],'77':['7️⃣','#ffd400'],dargonmoon:['🌙','#9ad0ff'],supercharger:['⚡','#ff3355'],superd:['👑','#ffffff']};
+function look(id){return LOOK[String(id).split('-')[0]]||['🤖','#888']}
+var bot='d',BOTS=[],H=JSON.parse(localStorage.getItem('d7.hist')||'[]');
+function saveH(){H=H.slice(-500);localStorage.setItem('d7.hist',JSON.stringify(H))}
+function bubble(m){var d=document.createElement('div');if(m.r=='u'){d.className='msg u';d.textContent=m.t}else{var L=look(m.id);d.className='msg a';d.style.borderColor=L[1];d.innerHTML=`<b style="color:${L[1]}">${L[0]} ${esc(m.b)}</b> <span class=k>${esc(m.s||'')}</span><br>${esc(m.t)}`}return d}
+function add(m,keep){$('log').appendChild(bubble(m));$('log').scrollTop=1e9;if(!keep){H.push(m);saveH()}}
+H.forEach(m=>add(m,1));
+function pick(id,n){bot=id;$('tgt').textContent='bot: '+n;document.querySelectorAll('[data-id]').forEach(e=>e.classList.toggle('on',e.dataset.id==id))}
+fetch('/api/bots').then(r=>r.json()).then(j=>{BOTS=j.bots;$('bots').innerHTML=j.bots.map(b=>{var L=look(b.id);return`<div class="bot" data-id="${b.id}" data-n="${esc(b.name)}"><div class="av" style="color:${L[1]};background:${L[1]}22">${L[0]}</div><div><b>${esc(b.name)}</b><div class=k>${esc(b.tier)}</div></div></div>`+b.subBots.map(s=>`<div class="sub" data-id="${s.id}" data-n="${esc(s.name)}">↳ ${esc(s.name)}</div>`).join('')}).join('');
+ document.querySelectorAll('#bots [data-id]').forEach(e=>e.onclick=()=>pick(e.dataset.id,e.dataset.n));pick('superd','Super D')});
+$('allbtn').onclick=()=>{pick('all','WSZYSTKIE');tab('all')};
+function tab(t){['chat','all'].forEach(x=>$('t-'+x).classList.toggle('hide',x!=t))}document.querySelectorAll('.tabs [data-t]').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+var PAGES=[['app','🎛 App ONE (SuperGrok)'],['index','🎛 DJ Pro Fly'],['super','🚀 D7 SUPER'],['classic','🎚 Classic'],['pro-dj','💿 Pro DJ'],['kali-live','📻 Kali Live'],['kali','📡 Kali'],['d','🤖 Bot D'],['public-chat','💬 Public chat'],['v51','🧪 v51'],['radio-gen','📻 Radio Gen']];
+$('links').innerHTML=PAGES.map(p=>`<a class="k" style="border:1px solid #333;padding:4px 7px;border-radius:7px" href="/${p[0]}.html">${p[1]}</a>`).join('');
+function speak(t){if(!$('tts').checked||!window.speechSynthesis)return;var u=new SpeechSynthesisUtterance(t.replace(/\[[^\]]*\]/g,'').slice(0,400));u.lang=($('lang').value||'pl')=='pl'?'pl-PL':$('lang').value;speechSynthesis.cancel();speechSynthesis.speak(u)}
+function ask(q,b){return fetch('/api/brain',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({q:q,bot:b,lang:$('lang').value||undefined})}).then(r=>r.json())}
+function toMsg(x){return{r:'a',b:x.bot,id:(BOTS.find(b=>b.name==x.bot.replace(/ (7777 Smart|77777)$/,''))||{}).id||x.bot.toLowerCase(),t:x.answer,s:x.source+(x.action?' · ⚙ '+x.action+(x.actionOk?' ✅':' ⛔'):'')}}
+$('f').onsubmit=e=>{e.preventDefault();var q=$('q').value.trim();if(!q)return;$('q').value='';add({r:'u',t:q});
+ if(bot=='all'){$('grid').innerHTML=BOTS.map(b=>`<div class="msg a" id="g-${b.id}" style="border-color:${look(b.id)[1]}"><b>${look(b.id)[0]} ${esc(b.name)}</b><br><span class=k>…myśli</span></div>`).join('');tab('all');
+  BOTS.forEach(b=>ask(q,b.id).then(x=>{var m=toMsg(x);$('g-'+b.id).replaceWith(bubble(m));H.push(m);saveH()}).catch(()=>{}));return}
+ ask(q,bot).then(x=>{var m=toMsg(x);add(m);speak(m.t);st();rl()}).catch(()=>add({r:'a',b:'system',id:'x',t:'⚠ backend offline — watchdog zrestartuje'},1))};
+$('exp').onclick=()=>{var b=new Blob([H.map(m=>(m.r=='u'?'Ty':m.b)+': '+m.t).join('\n\n')],{type:'text/plain'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='d7-chat-'+new Date().toISOString().slice(0,16)+'.txt';a.click()};
+$('clr').onclick=()=>{if(confirm('Wyczyścić lokalną historię?')){H=[];saveH();$('log').innerHTML=''}};
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)$('mic').style.display='none';else{var rec=new SR();rec.interimResults=false;
+ rec.onresult=e=>{$('q').value=e.results[0][0].transcript;$('f').requestSubmit()};rec.onend=()=>$('mic').classList.remove('rec');
+ $('mic').onclick=()=>{rec.lang=($('lang').value||'pl')=='pl'?'pl-PL':$('lang').value;$('mic').classList.add('rec');rec.start()}}
+var T=$('tok');T.value=localStorage.getItem('d7.tok')||'';function ts(){$('tokst').textContent=T.value?'zapisany lokalnie ✅':'brak — tylko czat/odczyt'}ts();T.onchange=()=>{localStorage.setItem('d7.tok',T.value.trim());ts();rl()};
+var CMD={help:'pomoc',status:'status',liveurl:'liveurl',bots:'boty',pages:'strony',health:'health',restart_server:'restart serwer',restart_tunnel:'restart tunel',logs:'logi',mem_clear_last:'usuń ostatni',broadcast:'do wszystkich: ',mem_save:'zapamiętaj: ',mem_search:'szukaj: ',relay:'@SuperGrok '};
+fetch('/api/actions').then(r=>r.json()).then(j=>{$('acts').innerHTML=j.actions.map(a=>`<button class="g" title="${esc(a.desc)}" data-a="${a.name}">${a.name}${a.needsToken?' 🔒':''}</button>`).join('');
+ document.querySelectorAll('#acts button').forEach(b=>b.onclick=()=>{var c=CMD[b.dataset.a];if(/[: ]$/.test(c)){$('q').value=c;$('q').focus()}else{$('q').value=c;$('f').requestSubmit()}})});
+function rl(){fetch('/api/relay').then(r=>r.json()).then(j=>{$('relay').innerHTML=j.locked?'🔒 wpisz token, by zobaczyć kolejkę':(j.queue.slice(-15).reverse().map(e=>`<div>${e.at.slice(11,16)} → <b>${esc(e.to)}</b> [${e.status}] ${esc(e.text.slice(0,80))}</div>`).join('')||'pusta kolejka')})}
+var TUN='',MESH='?';fetch('/api/bot-mesh').then(r=>r.json()).then(j=>{MESH=(j.peers||j.bots||[]).length}).catch(()=>{});function st(){fetch('/api/status').then(r=>r.json()).then(s=>{if(s.tunnel!=TUN){TUN=s.tunnel;$('qr').src='/api/qr.svg?'+Date.now()}
+ $('st').innerHTML=[['Boty online',s.online.length+' ✅'],['Backend',s.backend],['Pamięć',(s.memoryBytes/1024).toFixed(1)+' KB · '+s.messages+' msg · '+s.facts+' fakt.'],['Tunel',`<a href="${s.tunnel}">${s.tunnel.replace('https://','')}</a>`],['Bot mesh',MESH+' peerów'],['Czas',s.time.slice(11,19)]].map(r=>`<tr><td class=k>${r[0]}</td><td>${r[1]}</td></tr>`).join('');HB.push(1)}).catch(()=>{$('st').innerHTML='<tr><td>❌ offline</td></tr>';HB.push(0)})}
+var HB=[];function act(){fetch('/api/activity').then(r=>r.json()).then(j=>{var c=$('act'),x=c.getContext('2d');c.width=c.clientWidth;var P=j.points,mx=Math.max(1,...P.map(p=>p.n)),w=c.width/Math.max(P.length,1);x.clearRect(0,0,c.width,90);
+ P.forEach((p,i)=>{var h=p.n/mx*70;var g=x.createLinearGradient(0,90-h,0,90);g.addColorStop(0,'#ff2bd6');g.addColorStop(1,'#00f0ff');x.fillStyle=g;x.fillRect(i*w+1,88-h,w-2,h)});
+ HB.slice(-60).forEach((v,i)=>{x.fillStyle=v?'#39ff88':'#ff3355';x.fillRect(c.width-(60-i)*4,0,3,6)});
+ $('stats').textContent='Na bota: '+Object.entries(j.stats).map(e=>e[0]+' '+e[1]).join(' · ')+' | zdrowie (zielone=OK)'})}
+st();rl();act();setInterval(st,15000);setInterval(act,30000);setInterval(rl,20000);
+/* visualizer synced to BPM (tap) or mic */
+var bpm=128,taps=[],an=null,data=null;$('tap').onclick=()=>{var t=performance.now();taps=taps.filter(x=>t-x<3000);taps.push(t);if(taps.length>1){bpm=Math.round(60000/((taps[taps.length-1]-taps[0])/(taps.length-1)));$('bpm').textContent=bpm}};
+$('micviz').onclick=()=>navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{var A=new AudioContext();an=A.createAnalyser();an.fftSize=256;data=new Uint8Array(an.frequencyBinCount);A.createMediaStreamSource(s).connect(an);$('micviz').textContent='🎧 ON'}).catch(()=>alert('Brak dostępu do mikrofonu'));
+var V=$('viz'),vx=V.getContext('2d');function fr(t){V.width=innerWidth;V.height=innerHeight;var ph=(t/ (60000/bpm))%1,kick=Math.pow(1-ph,4);
+ if(an){an.getByteFrequencyData(data);kick=data.slice(0,8).reduce((a,b)=>a+b,0)/2040}
+ vx.fillStyle='#07070b';vx.fillRect(0,0,V.width,V.height);var cx=V.width/2,cy=V.height/2;
+ for(var i=0;i<48;i++){var a=i/48*Math.PI*2+t/4000,r=120+kick*160+(an?data[i%data.length]/2:Math.sin(t/300+i)*20);vx.strokeStyle=i%2?'#00f0ff55':'#ff2bd655';vx.lineWidth=2+kick*4;vx.beginPath();vx.moveTo(cx+Math.cos(a)*80,cy+Math.sin(a)*80);vx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);vx.stroke()}
+ vx.strokeStyle='#ffffff11';for(var y=(t/20)%40;y<V.height;y+=40){vx.beginPath();vx.moveTo(0,y);vx.lineTo(V.width,y);vx.stroke()}requestAnimationFrame(fr)}requestAnimationFrame(fr);
+/* PWA */
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/superapp-sw.js').catch(()=>{});var dp;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('inst').style.display=''});$('inst').onclick=()=>dp&&dp.prompt();
+</script></body></html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D7 Music AI PRO</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#07070a"><link rel="icon" href="icon.svg">
+<style>
+:root{--bg:#07070a;--p:#111118;--b:#26263a;--a:#00ffa3;--a2:#ff2e88;--t:#ddd}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font-family:system-ui,sans-serif}
+header{padding:14px 16px;border-bottom:1px solid var(--b);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+h1{margin:0;font-size:20px;letter-spacing:4px;color:var(--a);text-shadow:0 0 12px var(--a)}
+nav button{background:none;border:1px solid var(--b);color:var(--t);padding:8px 12px;margin:2px;cursor:pointer;border-radius:4px}
+nav button.on{border-color:var(--a);color:var(--a)}
+main{padding:16px;max-width:1000px;margin:auto}.tab{display:none}.tab.on{display:block}
+.card{background:var(--p);border:1px solid var(--b);border-radius:8px;padding:14px;margin-bottom:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}label{display:flex;flex-direction:column;font-size:12px;gap:4px;color:#999}
+select,input,textarea{background:#000;color:var(--t);border:1px solid var(--b);padding:8px;border-radius:4px;font-size:14px}
+.btn{background:var(--a);color:#000;border:0;padding:10px 16px;font-weight:700;border-radius:4px;cursor:pointer;letter-spacing:1px}
+.btn.s{background:var(--a2);color:#fff}.btn.g{background:#222;color:var(--t);border:1px solid var(--b)}
+#grid{display:grid;grid-template-columns:70px repeat(16,1fr);gap:2px;font-size:11px;overflow-x:auto}
+#grid div{height:18px;background:#1a1a24;border-radius:2px}#grid .n{background:none;color:#888}
+#grid .x{background:var(--a)}#grid .cur{outline:1px solid var(--a2)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.bot h3{margin:0 0 6px;color:var(--a)}.bot{border-left:3px solid var(--a2)}a{color:var(--a)}
+.hero{background:linear-gradient(90deg,rgba(7,7,10,.92),rgba(7,7,10,.55)),url(hero.jpg) center/cover;min-height:340px}
+.mono{font-family:monospace;font-size:12px;color:#888}.decks{display:grid;grid-template-columns:1fr 220px 1fr;gap:12px}@media(max-width:800px){.decks{grid-template-columns:1fr}}
+.deck h3,.mixer h3{margin:0 0 8px;color:var(--a)}.deck canvas{width:100%;height:60px;background:#000;border-radius:4px;cursor:pointer}.deck .big{font-size:26px;font-family:monospace;color:var(--a2)}
+.knobs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.knobs input{width:100%}.mixer label,.deck label{margin-top:6px}input[type=range]{accent-color:var(--a)}
+#vizBox{position:relative;padding:0;overflow:hidden}#vc{width:100%;height:60vh;display:block;background:#000}#vizBox:fullscreen #vc{height:100vh}.vbar{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,.6);padding:6px;border-radius:6px}
+.light{display:inline-block;width:12px;height:12px;border-radius:50%;background:#333;margin-right:6px;vertical-align:middle}.light.on{background:var(--a);box-shadow:0 0 10px var(--a)}.light.warn{background:var(--a2);box-shadow:0 0 10px var(--a2)}
+.ok{border-left:3px solid var(--a)}.bad{border-left:3px solid var(--a2)}
+.hero{display:flex;gap:16px;flex-wrap:wrap;align-items:center}#chat{height:220px;overflow-y:auto;background:#000;border:1px solid var(--b);border-radius:6px;padding:8px;margin-bottom:8px;font-size:14px}#chat p{margin:4px 0}#chat .u{color:#aaa;text-align:right}#chat .z{color:var(--a)}.ant{animation:bl 1.5s infinite alternate}@keyframes bl{to{opacity:.2}}#alien{animation:fl 3s ease-in-out infinite}@keyframes fl{50%{transform:translateY(-6px)}}.bot{cursor:pointer}
+#log{font-family:monospace;font-size:12px;color:#888}
+</style></head><body>
+<header><h1>D7 ▸ MUSIC AI <span style="color:var(--a2)">PRO</span></h1><nav><button data-t="start" class="on">Start</button><button data-t="gen">Generator</button><button data-t="decks">Decki</button><button data-t="viz">Wizualizer</button><button data-t="ai">AI Hub</button><button data-t="boty">Boty</button><button data-t="old">Starsze wersje</button><button data-t="sys">Self-check</button><button data-t="superg">😈 Super G</button></nav></header>
+<main>
+<section id="start" class="tab on">
+<div class="card hero" id="heroBox"><svg id="alien" viewBox="0 0 200 220" width="180" height="200">
+<defs><radialGradient id="hg" cx=".5" cy=".4"><stop offset="0" stop-color="#5dffc4"/><stop offset="1" stop-color="#0a8f62"/></radialGradient></defs>
+<line x1="70" y1="40" x2="55" y2="8" stroke="#5dffc4" stroke-width="3"/><circle cx="55" cy="8" r="6" fill="#ff2e88" class="ant"/>
+<line x1="130" y1="40" x2="145" y2="8" stroke="#5dffc4" stroke-width="3"/><circle cx="145" cy="8" r="6" fill="#ff2e88" class="ant"/>
+<ellipse cx="100" cy="100" rx="75" ry="85" fill="url(#hg)"/>
+<g id="eyes"><ellipse cx="68" cy="95" rx="22" ry="14" fill="#000" transform="rotate(20 68 95)"/><ellipse cx="132" cy="95" rx="22" ry="14" fill="#000" transform="rotate(-20 132 95)"/>
+<circle cx="72" cy="92" r="4" fill="#fff"/><circle cx="128" cy="92" r="4" fill="#fff"/></g>
+<ellipse id="mouth" cx="100" cy="150" rx="16" ry="3" fill="#200"/></svg>
+<div style="flex:1;min-width:240px"><h2 style="color:var(--a);margin-top:0">Cześć! Jestem Zorg 👽</h2>
+<div id="chat"></div><div class="row"><input id="ci" placeholder="Napisz do Zorga…" style="flex:1"><button class="btn" id="cs">Wyślij</button></div>
+<label style="margin-top:8px"><span><input type="checkbox" id="tts" checked> mów na głos (Web Speech API)</span></label></div></div>
+<div class="card"><h3 style="margin-top:0">Boty Daniela — kliknij, a Zorg przedstawi bota</h3><div class="cards" id="hbots"></div></div>
+<div class="card"><h3 style="margin-top:0">📱 Pobierz APK</h3>
+<p>Natywna aplikacja Android (APK, instalacja poza sklepem) albo instalacja jako PWA z przeglądarki.</p>
+<div class="row"><a class="btn" id="apkBtn" href="downloads/D7-Music-AI-PRO.apk" download>⬇ Pobierz APK</a></div><p id="apkMsg" style="font-size:12px;color:#888">Android: pobierz plik, otwórz go i zezwól na instalację z nieznanych źródeł.</p>
+<button class="btn" id="inst" disabled>Zainstaluj aplikację</button><p id="instMsg" style="font-size:12px;color:#888">Jeśli przycisk jest nieaktywny: w Chrome użyj menu ⋮ → „Zainstaluj aplikację”, na iPhonie Safari → Udostępnij → „Do ekranu początkowego”. Instalacja wymaga HTTPS.</p></div>
+<div class="card"><h3 style="margin-top:0">💳 BLIK · Polska (darmowe wsparcie)</h3>
+<p>Prawdziwy terminal BLIK (PayU / Przelewy24) wymaga konta sprzedawcy — tu jest <b>darmowa ścieżka</b>: przelew BLIK na telefon albo wiadomość na WhatsApp.</p>
+<p style="font-size:1.4em;letter-spacing:2px"><b>+48 730 377 357</b></p>
+<p style="margin:6px 0 2px"><b>Nest Bank</b> · przelew na konto (IBAN):</p>
+<p style="font-family:monospace;font-size:1.1em;word-break:break-all"><b id="iban">PL45 1870 1045 2083 1058 7576 0001</b></p>
+<p style="font-size:12px;color:#888;margin:0 0 6px">Nr konta: 45 1870 1045 2083 1058 7576 0001</p>
+<div class="row">
+<a class="btn" href="https://wa.me/48730377357?text=BLIK%20D7%20DJ%20PRO" target="_blank" rel="noopener">WhatsApp · BLIK</a>
+<a class="btn g" href="tel:+48730377357">Zadzwoń</a>
+<button class="btn" type="button" id="copyIban">📋 Kopiuj IBAN</button>
+<a class="btn s" href="https://plane-intention-family-subscribe.trycloudflare.com" target="_blank" rel="noopener">Live Super G</a>
+</div>
+<p style="font-size:12px;color:#888;margin-top:8px">Kwotę i tytuł ustalasz w banku (BLIK na telefon). To nie jest automatyczna bramka płatności.</p></div>
+</section>
+<section id="gen" class="tab">
+<div class="card"><div class="row">
+<label>Gatunek<select id="genre"><option value="techno">Techno</option><option value="psytrance">Psytrance</option><option value="house">House</option><option value="ambient">Ambient</option><option value="hiphop">Hip-hop</option></select></label>
+<label>BPM <input id="bpm" type="number" min="60" max="200" value="130" style="width:80px"></label>
+<label>Tonacja<select id="key"></select></label>
+<label>Skala<select id="scale"><option>minor</option><option>major</option><option>phrygian</option><option>dorian</option><option>harmonicMinor</option><option>pentaMinor</option></select></label>
+</div><div class="row" style="margin-top:12px">
+<button class="btn" id="rnd">🎲 Losuj</button><button class="btn" id="play">▶ Graj</button><button class="btn s" id="stop">■ Stop</button>
+<button class="btn g" id="mut">🧬 Mutuj</button><label><span><input type="checkbox" id="autoGen"> Auto: nowa pętla co 8 taktów</span></label><button class="btn g" id="wav">💾 Eksport WAV (4 takty)</button></div></div>
+<div class="card"><div class="row">
+<label>Głośność ścieżek</label>
+<label>Perkusja<input type="range" id="vd" min="0" max="1" step=".05" value=".9"></label>
+<label>Bas<input type="range" id="vb" min="0" max="1" step=".05" value=".7"></label>
+<label>Melodia<input type="range" id="vm" min="0" max="1" step=".05" value=".4"></label>
+<label>Pad<input type="range" id="vp" min="0" max="1" step=".05" value=".35"></label></div></div>
+<div class="card"><div id="grid"></div></div>
+<div class="card"><h3 style="margin-top:0">🎛 Web MIDI → Roland MC-707</h3>
+<div class="row"><button class="btn g" id="midiOn">Połącz MIDI</button><label>Wyjście<select id="midiOut"><option value="">—</option></select></label>
+<label><span><input type="checkbox" id="midiNotes"> wysyłaj nuty</span></label><label><span><input type="checkbox" id="midiClock"> wysyłaj zegar + Start/Stop</span></label></div>
+<p style="font-size:12px;color:#888">Kanały: Kick 10 (nuta 36), Snare 38, HH 42 · Bas ch2 · Melodia ch3 · Pad ch4. Na MC-707 ustaw kanały ścieżek i SYNC = MIDI/AUTO. Wymaga Chrome/Edge (desktop/Android) przez HTTPS.</p><div id="log"></div></div>
+</section>
+
+<section id="decks" class="tab">
+<div class="decks">
+<div class="card deck" id="deckA"></div>
+<div class="card mixer"><h3>MIXER</h3>
+<label>Crossfader<input type="range" id="xf" min="0" max="1" step=".01" value=".5"></label>
+<button class="btn g" id="xfA">◀ A</button><button class="btn g" id="xfB">B ▶</button>
+<label style="margin-top:10px"><span><input type="checkbox" id="autoMix"> AUTO-MIX (przejście na beat)</span></label>
+<label>Co ile taktów<select id="amBars"><option>8</option><option selected>16</option><option>32</option></select></label>
+<label>Długość przejścia (takty)<select id="amLen"><option>2</option><option selected>4</option><option>8</option></select></label>
+<div id="amStat" class="mono"></div></div>
+<div class="card deck" id="deckB"></div></div>
+<p class="mono">Źródła: plik audio z telefonu/komputera, pętla z generatora albo radio internetowe (SomaFM, Radio Paradise — z Kali Radio). BPM: autodetekcja z pliku, dla pętli dokładne.</p>
+</section>
+<section id="viz" class="tab"><div id="vizBox" class="card"><canvas id="vc"></canvas>
+<div class="row vbar"><label>Tryb<select id="vmode"><option value="bars">Spektrum</option><option value="scope">Oscyloskop</option><option value="radial">Radial</option><option value="tunnel">Tunel</option><option value="particles">Cząsteczki</option><option value="milk">MilkDrop (Butterchurn)</option></select></label>
+<label><span><input type="checkbox" id="vauto"> auto-zmiana na beat</span></label><button class="btn" id="vfs">⛶ Pełny ekran</button></div></div>
+<p class="mono">Wizualizer reaguje na wszystko co gra (generator, decki, radio). Bez dźwięku działa tryb demo. Dotknij obrazu, aby zmienić tryb.</p></section>
+<section id="old" class="tab"><div class="card"><h3 style="margin-top:0">Starsze wersje aplikacji Daniela (archiwum)</h3>
+<p class="mono">Oryginalne pliki skopiowane z dysku bota, bez zmian. Niektóre korzystają z internetu (YouTube, radio, Google Fonts) i mogą nie działać offline.</p>
+<div class="cards" id="oldList"></div><iframe id="oldFrame" style="width:100%;height:70vh;border:1px solid var(--b);border-radius:6px;display:none;background:#000"></iframe></div></section>
+<section id="superg" class="tab"><div class="card"><h2 style="margin-top:0;color:var(--a2)">😈 Super Bot G PRO · AUTO DJ</h2>
+<p>Tym trybem steruje <b>Super Bot G PRO</b>. Jedno kliknięcie i bot sam miksuje decki co 16 taktów, generuje nowe pętle i zmienia wizualizacje na beat. Ty tylko tańczysz.</p>
+<button class="btn" id="gGo" style="font-size:18px">▶ START AUTO DJ</button> <button class="btn s" id="gStop">■ STOP</button>
+<div class="cards" id="gLights" style="margin-top:14px"></div><p class="mono" id="gInfo"></p></div></section>
+<section id="sys" class="tab"><div class="card"><h3 style="margin-top:0">🩺 Self-check</h3>
+<p class="mono">Strażnik łapie błędy JavaScript, przypisuje je do modułu i automatycznie resetuje zepsuty moduł.</p>
+<button class="btn" id="selfTest">Uruchom test modułów</button> <button class="btn g" id="crashTest">Symuluj awarię wizualizera</button>
+<div id="modStat" class="cards" style="margin-top:12px"></div><pre id="errLog" class="mono" style="white-space:pre-wrap"></pre></div></section>
+<section id="ai" class="tab">
+<div class="card"><h3 style="margin-top:0">Darmowe narzędzia AI do muzyki</h3><div class="cards">
+<div class="card bot"><h3>Suno</h3><p>Pełne piosenki z wokalem z tekstu.</p><a href="https://suno.com" target="_blank" rel="noopener">suno.com ↗</a></div>
+<div class="card bot"><h3>Udio</h3><p>Generowanie utworów wysokiej jakości.</p><a href="https://www.udio.com" target="_blank" rel="noopener">udio.com ↗</a></div>
+<div class="card bot"><h3>Stable Audio</h3><p>Loopy, sample, instrumentale (Stability AI).</p><a href="https://stableaudio.com" target="_blank" rel="noopener">stableaudio.com ↗</a></div>
+<div class="card bot"><h3>MusicGen</h3><p>Meta MusicGen na Hugging Face.</p><a href="https://huggingface.co/spaces/facebook/MusicGen" target="_blank" rel="noopener">huggingface.co ↗</a></div>
+<div class="card bot"><h3>Riffusion</h3><p>Muzyka z promptu, remiksy.</p><a href="https://www.riffusion.com" target="_blank" rel="noopener">riffusion.com ↗</a></div>
+</div></div>
+<div class="card"><h3 style="margin-top:0">Kreator promptów (Suno / Udio)</h3><div class="row">
+<label>Gatunek<select id="pg"><option>dark techno</option><option>psytrance</option><option>deep house</option><option>ambient</option><option>boom bap hip-hop</option><option>melodic techno</option><option>acid techno</option></select></label>
+<label>Nastrój<select id="pm"><option>dark</option><option>hypnotic</option><option>euphoric</option><option>melancholic</option><option>aggressive</option><option>dreamy</option></select></label>
+<label>Instrumenty<input id="pi" value="analog synths, 909 drums, rolling bassline"></label>
+<label>Wokal<select id="pv"><option value="instrumental">instrumental</option><option value="female vocals in Polish">wokal żeński (PL)</option><option value="male vocals in Polish">wokal męski (PL)</option><option value="chopped vocal samples">sample wokalne</option></select></label>
+<label>BPM<input id="pb" type="number" value="132" style="width:80px"></label>
+<button class="btn" id="mk">Twórz prompt</button></div>
+<textarea id="po" rows="4" style="width:100%;margin-top:10px"></textarea><button class="btn g" id="cp">📋 Kopiuj</button></div>
+</section>
+<section id="boty" class="tab"><div class="cards" id="bots"></div></section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button,.tab').forEach(e=>e.classList.remove('on'));b.classList.add('on');$(b.dataset.t).classList.add('on')});
+const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];NOTES.forEach((n,i)=>$('key').add(new Option(n,i)));$('key').value=9;
+const SC={minor:[0,2,3,5,7,8,10],major:[0,2,4,5,7,9,11],phrygian:[0,1,3,5,7,8,10],dorian:[0,2,3,5,7,9,10],harmonicMinor:[0,2,3,5,7,8,11],pentaMinor:[0,3,5,7,10]};
+const GB={techno:130,psytrance:143,house:124,ambient:80,hiphop:90};
+$('genre').onchange=()=>$('bpm').value=GB[$('genre').value];
+const R=Math.random,ch=a=>a[Math.floor(R()*a.length)];
+let P=null;
+function deg(d,oct){const s=SC[$('scale').value],n=s.length;const o=Math.floor(d/n);return 12*(oct+o)+(+$('key').value)+s[((d%n)+n)%n]}
+function gen(){const g=$('genre').value,p={kick:[],snare:[],hat:[],bass:[],mel:[],pad:[]};
+for(let i=0;i<16;i++){let k=0,s=0,h=0,b=null,m=null;
+ if(g=='techno'){k=i%4==0;s=(i%8==4)&&R()<.6;h=i%4==2||R()<.25;b=(i%4!=0&&R()<.5)?ch([0,0,0,7,-2]):null}
+ if(g=='psytrance'){k=i%4==0;s=i%8==4&&R()<.3;h=i%4==2;b=i%4!=0?(R()<.85?0:ch([1,3,-1])):null}
+ if(g=='house'){k=i%4==0;s=i%8==4;h=i%4==2||(i%2==1&&R()<.3);b=(i%4==2||R()<.25)?ch([0,0,4,5,7]):null}
+ if(g=='ambient'){k=i==0&&R()<.5;s=0;h=R()<.12;b=i==0?0:(i==8&&R()<.5?ch([3,4]):null)}
+ if(g=='hiphop'){k=i==0||i==10||(R()<.2&&i%2==0);s=i==4||i==12;h=i%2==0;b=k?ch([0,0,3,5]):null}
+ if(R()<(g=='ambient'?.2:.35))m=ch([0,1,2,3,4,5,7]);
+ p.kick.push(+k);p.snare.push(+s);p.hat.push(+h);p.bass.push(b);p.mel.push(m)}
+const prog=ch([[0,5,3,4],[0,3,4,0],[0,6,5,4],[0,0,5,5]]);p.pad=prog;P=p;draw()}
+function mutate(){if(!P)return gen();for(let n=0;n<4;n++){const i=Math.floor(R()*16);const t=ch(['hat','snare','mel','bass','kick']);
+ if(t=='mel')P.mel[i]=P.mel[i]==null?ch([0,2,4,5]):null;else if(t=='bass')P.bass[i]=P.bass[i]==null?ch([0,3,7]):null;else if(t!='kick'||i%4)P[t][i]^=1}draw()}
+function draw(){const G=$('grid');G.innerHTML='';[['Kick','kick'],['Snare','snare'],['HiHat','hat'],['Bas','bass'],['Melodia','mel']].forEach(([n,k])=>{
+ G.insertAdjacentHTML('beforeend',`<div class="n">${n}</div>`);P[k].forEach((v,i)=>G.insertAdjacentHTML('beforeend',`<div data-s="${i}" class="${(v!==null&&v!==0)?'x':''}"></div>`))})}
+const mtof=m=>440*Math.pow(2,(m-69)/12);let noiseBuf=new WeakMap();
+function noise(c){if(!noiseBuf.has(c)){const b=c.createBuffer(1,c.sampleRate,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=R()*2-1;noiseBuf.set(c,b)}return noiseBuf.get(c)}
+function env(c,t,a,d,v){const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d);return g}
+function osc(c,type,f,t,dur,dest,det=0){const o=c.createOscillator();o.type=type;o.frequency.value=f;o.detune.value=det;o.connect(dest);o.start(t);o.stop(t+dur+.05);return o}
+function nz(c,t,dur,dest,hp){const s=c.createBufferSource();s.buffer=noise(c);const f=c.createBiquadFilter();f.type='highpass';f.frequency.value=hp;s.connect(f);f.connect(dest);s.start(t);s.stop(t+dur)}
+function step(c,out,i,t,bar,sd){const g=$('genre').value,V=k=>+$(k).value;
+ if(P.kick[i]){const e=env(c,t,.002,.35,V('vd'));e.connect(out);const o=c.createOscillator();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+.12);o.connect(e);o.start(t);o.stop(t+.4)}
+ if(P.snare[i]){const e=env(c,t,.001,.18,V('vd')*.5);e.connect(out);nz(c,t,.2,e,1500)}
+ if(P.hat[i]){const e=env(c,t,.001,i%4==2?.12:.04,V('vd')*.25);e.connect(out);nz(c,t,.15,e,7000)}
+ const root=P.pad[bar%4];
+ if(P.bass[i]!=null){const f=c.createBiquadFilter();f.type='lowpass';f.Q.value=g=='psytrance'?8:5;f.frequency.setValueAtTime(g=='ambient'?400:1800,t);f.frequency.exponentialRampToValueAtTime(120,t+sd);
+  const e=env(c,t,.003,g=='ambient'?sd*8:sd*.9,V('vb')*.5);f.connect(e);e.connect(out);osc(c,g=='hiphop'?'sine':'sawtooth',mtof(deg(root+P.bass[i],2)),t,g=='ambient'?sd*8:sd,f)}
+ if(P.mel[i]!=null){const e=env(c,t,.005,sd*(g=='ambient'?6:1.5),V('vm')*.25);const f=c.createBiquadFilter();f.frequency.value=3000;f.connect(e);e.connect(out);
+  const d=c.createDelay();d.delayTime.value=sd*3;const fb=c.createGain();fb.gain.value=.35;e.connect(d);d.connect(fb);fb.connect(d);fb.connect(out);
+  osc(c,g=='psytrance'?'sawtooth':'square',mtof(deg(root+P.mel[i],5)),t,sd*2,f)}
+ if(i==0){const dur=sd*16,e=c.createGain();e.gain.setValueAtTime(0,t);e.gain.linearRampToValueAtTime(V('vp')*.12,t+dur*.3);e.gain.linearRampToValueAtTime(0,t+dur);
+  const f=c.createBiquadFilter();f.frequency.value=1200;f.connect(e);e.connect(out);[0,2,4].forEach(x=>{const m=mtof(deg(root+x,4));osc(c,'sawtooth',m,t,dur,f,-8);osc(c,'sawtooth',m,t,dur,f,8)})}}
+let ac,master,timer,cur=0,bar=0,nextT=0,playing=false;
+function sdur(){return 60/+$('bpm').value/4}
+function sched(){while(nextT<ac.currentTime+.12){step(ac,master,cur,nextT,bar,sdur());midiStep(cur,nextT);const s=cur,d=(nextT-ac.currentTime)*1000;setTimeout(()=>hl(s),d);
+ nextT+=sdur();if(++cur==16){cur=0;bar++;if(window.autoGenTick)autoGenTick(bar)}}}
+function hl(s){document.querySelectorAll('#grid .cur').forEach(e=>e.classList.remove('cur'));if(playing)document.querySelectorAll(`#grid [data-s="${s}"]`).forEach(e=>e.classList.add('cur'))}
+function play(){if(!P)gen();if(playing)return;ac=AC();master=ac.createDynamicsCompressor();master.connect(OUT());
+ playing=true;cur=0;bar=0;nextT=ac.currentTime+.08;midiStart();timer=setInterval(sched,25)}
+function stop(){playing=false;clearInterval(timer);midiStop();hl(-1);if(master){master.disconnect();master=null}}
+$('rnd').onclick=()=>{gen()};$('play').onclick=play;$('stop').onclick=stop;$('mut').onclick=mutate;
+// WAV
+async function renderLoop(bars=4,tail=2){if(!P)gen();const sd=sdur(),sr=44100,len=sd*16*bars+tail;const c=new OfflineAudioContext(2,Math.ceil(sr*len),sr);const m=c.createDynamicsCompressor();m.connect(c.destination);
+ for(let k=0;k<16*bars;k++)step(c,m,k%16,k*sd,Math.floor(k/16),sd);return c.startRendering()}
+$('wav').onclick=async()=>{const buf=await renderLoop(4);const blob=wav(buf);
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`D7_${$('genre').value}_${$('bpm').value}bpm.wav`;a.click()};
+function wav(b){const n=b.numberOfChannels,l=b.length,dv=new DataView(new ArrayBuffer(44+l*n*2));let p=0;const w=s=>{for(const ch of s)dv.setUint8(p++,ch.charCodeAt(0))},u32=v=>{dv.setUint32(p,v,true);p+=4},u16=v=>{dv.setUint16(p,v,true);p+=2};
+ w('RIFF');u32(36+l*n*2);w('WAVEfmt ');u32(16);u16(1);u16(n);u32(b.sampleRate);u32(b.sampleRate*n*2);u16(n*2);u16(16);w('data');u32(l*n*2);
+ const C=[...Array(n)].map((_,i)=>b.getChannelData(i));for(let i=0;i<l;i++)for(let j=0;j<n;j++){const s=Math.max(-1,Math.min(1,C[j][i]));dv.setInt16(p,s*32767,true);p+=2}return new Blob([dv],{type:'audio/wav'})}
+// MIDI
+let midi=null,mo=null,clk=null;const log=s=>$('log').textContent=s;
+$('midiOn').onclick=async()=>{if(!navigator.requestMIDIAccess)return log('Przeglądarka nie obsługuje Web MIDI (użyj Chrome/Edge).');
+ try{midi=await navigator.requestMIDIAccess();const s=$('midiOut');s.length=1;midi.outputs.forEach(o=>s.add(new Option(o.name,o.id)));
+ const mc=[...midi.outputs.values()].find(o=>/707/.test(o.name));if(mc){s.value=mc.id;mo=mc}log(`Wyjścia: ${midi.outputs.size}${mc?' · wykryto MC-707':''}`)}catch(e){log('Brak dostępu MIDI: '+e.message)}};
+$('midiOut').onchange=e=>mo=midi&&midi.outputs.get(e.target.value);
+function ms(t){return performance.now()+(t-ac.currentTime)*1000}
+function note(chn,n,t,d){if(!mo)return;mo.send([0x90+chn,n,100],ms(t));mo.send([0x80+chn,n,0],ms(t+d))}
+function midiStep(i,t){if(!mo||!$('midiNotes').checked)return;const sd=sdur(),root=P.pad[bar%4];
+ if(P.kick[i])note(9,36,t,sd*.5);if(P.snare[i])note(9,38,t,sd*.5);if(P.hat[i])note(9,42,t,sd*.5);
+ if(P.bass[i]!=null)note(1,deg(root+P.bass[i],3),t,sd*.9);if(P.mel[i]!=null)note(2,deg(root+P.mel[i],5),t,sd*1.5);
+ if(i==0)[0,2,4].forEach(x=>note(3,deg(root+x,4),t,sd*15.5))}
+function midiStart(){if(!mo||!$('midiClock').checked)return;mo.send([0xFA]);let tick=nextT;clk=setInterval(()=>{const pp=sdur()/6;while(tick<ac.currentTime+.1){mo.send([0xF8],ms(tick));tick+=pp}},20)}
+function midiStop(){clearInterval(clk);if(mo){if($('midiClock').checked)mo.send([0xFC]);for(let c=0;c<16;c++)mo.send([0xB0+c,123,0])}}
+// prompt
+$('mk').onclick=()=>{const g=$('pg').value,m=$('pm').value;$('po').value=`${m} ${g}, ${$('pb').value} BPM, ${$('pi').value}, ${$('pv').value}, club-ready mix, wide stereo, punchy low end, Kraków underground warehouse vibe`};
+$('cp').onclick=()=>navigator.clipboard&&navigator.clipboard.writeText($('po').value);$('mk').click();
+// bots
+const B=[['SuperGrok','Główny asystent AI'],['DargonMoon','Bot kreatywny / nocny'],['AutoFix','Automatyczne naprawy'],['SuperCharger','Przyspieszanie zadań'],['D','Osobisty bot Daniela'],['Dragon','Bot mocy'],['SuperBotD','Wielozadaniowy bot'],['77','Bot szczęścia'],['Super Bot G PRO','Bot G — autopilot DJ: auto-mix, pętle, wizualizacje']];
+$('bots').innerHTML=B.map(([n,d])=>`<div class="card bot"><h3>🤖 ${n}</h3><p>${d}</p><span style="color:var(--a);font-size:12px">● aktywny</span></div>`).join('');
+gen();
+// alien chat
+const BD={BLIK:'BLIK na telefon Daniela: +48 730 377 357. Napisz na WhatsApp albo zrób przelew BLIK w banku. Przelew tradycyjny: Nest Bank, IBAN PL45 1870 1045 2083 1058 7576 0001. Automatyczna bramka PayU wymaga konta sprzedawcy.',SuperGrok:'SuperGrok to główny asystent AI Daniela — odpowiada na pytania i pomaga w codziennej pracy.',DargonMoon:'DargonMoon to kreatywny, nocny bot — idealny do pomysłów o północy.',AutoFix:'AutoFix automatycznie wykrywa i naprawia problemy.',SuperCharger:'SuperCharger przyspiesza zadania i automatyzacje.',D:'D to osobisty bot Daniela, jego cyfrowe alter ego.',Dragon:'Dragon to bot mocy — do ciężkich zadań.',SuperBotD:'SuperBotD to wielozadaniowy bot do wszystkiego.','77':'77 to bot szczęścia — siedem siedem, zawsze na plus!','Super Bot G PRO':'Super Bot G PRO, czyli bot G, to autopilot DJ. W zakładce Super G jednym kliknięciem odpala auto-mix co 16 taktów, nowe pętle i wizualizacje na beat.'};
+const chat=$('chat');let mouthT=null;
+function mouth(on){clearInterval(mouthT);const m=$('mouth');if(!on){m.setAttribute('ry',3);return}mouthT=setInterval(()=>m.setAttribute('ry',3+Math.random()*12),90)}
+function say(t){chat.insertAdjacentHTML('beforeend',`<p class="z">👽 ${t}</p>`);chat.scrollTop=1e6;
+ if(!$('tts').checked||!window.speechSynthesis){mouth(true);setTimeout(()=>mouth(false),Math.min(6000,t.length*60));return}
+ speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='pl-PL';u.pitch=1.4;u.rate=1.05;const v=speechSynthesis.getVoices().find(v=>/^pl/i.test(v.lang));if(v)u.voice=v;
+ u.onstart=()=>mouth(true);u.onend=u.onerror=()=>mouth(false);speechSynthesis.speak(u);setTimeout(()=>{if(!speechSynthesis.speaking)mouth(false)},Math.max(3000,t.length*90))}
+function answer(q){q=q.toLowerCase();for(const n in BD)if(new RegExp('\\b'+n.toLowerCase()+'\\b').test(q)&&n.length>1||q.trim()==n.toLowerCase())return BD[n];
+ const R=[[/cze|hej|siema|witaj|elo/,'Siema! Jestem Zorg z planety Techno. Zapytaj mnie o generator, MIDI, AI Hub albo boty Daniela.'],
+ [/bot/,'Daniel ma osiem botów: SuperGrok, DargonMoon, AutoFix, SuperCharger, D, Dragon, SuperBotD i 77. Kliknij któregoś poniżej!'],
+ [/generat|losuj|muzyk|beat|gatun/,'W zakładce Generator wybierasz gatunek, BPM i tonację, klikasz Losuj i dostajesz perkusję, bas, melodię i pad. Mutuj zmienia pętlę.'],
+ [/wav|eksport|zapis|pobierz/,'Przycisk Eksport WAV renderuje cztery takty do pliku WAV prosto w przeglądarce.'],
+ [/midi|707|roland|mc/,'Podłącz Rolanda MC-707 przez USB, kliknij Połącz MIDI w Chrome. Wysyłam nuty: perkusja kanał 10, bas 2, melodia 3, pad 4, oraz zegar MIDI.'],
+ [/ai|suno|udio|prompt/,'W AI Hub znajdziesz Suno, Udio, Stable Audio, MusicGen i Riffusion oraz kreator promptów.'],
+ [/apk|instal|aplikac|telefon/,'APK pobierzesz na stronie Start przyciskiem Pobierz APK (Android). Możesz też zainstalować stronę jako PWA.'],
+ [/daniel|kto/,'Daniel Dydo to DJ z Krakowa, gra na Rolandzie MC-707 i buduje własne boty AI.'],
+ [/bpm|tempo/,'Techno około 130, psytrance 143, house 124, ambient 80, hip-hop 90 BPM.'],
+ [/dzięk|dzieki/,'Nie ma sprawy, Ziemianinie!']];
+ for(const[r,a]of R)if(r.test(q))return a;return 'Hmm, na mojej planecie tego nie uczą. Spytaj o generator, MIDI, AI Hub, APK albo boty.'}
+function send(){const q=$('ci').value.trim();if(!q)return;chat.insertAdjacentHTML('beforeend',`<p class="u"></p>`);chat.lastChild.textContent=q;$('ci').value='';say(answer(q))}
+$('cs').onclick=send;$('ci').onkeydown=e=>{if(e.key=='Enter')send()};
+$('hbots').innerHTML=B.map(([n])=>`<div class="card bot" data-b="${n}"><h3>🤖 ${n}</h3></div>`).join('');
+$('hbots').onclick=e=>{const c=e.target.closest('[data-b]');if(c)say(BD[c.dataset.b])};
+if(window.speechSynthesis)speechSynthesis.onvoiceschanged=()=>{};
+chat.insertAdjacentHTML('beforeend','<p class="z">👽 Siema! Jestem Zorg. Napisz coś albo kliknij bota.</p>');
+// PWA
+let dp=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('inst').disabled=false});
+$('inst').onclick=async()=>{if(!dp)return;dp.prompt();const r=await dp.userChoice;$('instMsg').textContent=r.outcome=='accepted'?'Zainstalowano!':'Anulowano.';dp=null;$('inst').disabled=true};
+window.addEventListener('appinstalled',()=>$('instMsg').textContent='Aplikacja zainstalowana ✔');
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+<script src="lib/butterchurn.min.js"></script><script src="lib/butterchurnPresets.min.js"></script><script src="pro.js"></script><script>
+(function(){var b=document.getElementById('copyIban');if(b)b.onclick=function(){var t='PL45 1870 1045 2083 1058 7576 0001';function ok(){b.textContent='✅ Skopiowano';setTimeout(function(){b.textContent='📋 Kopiuj IBAN'},1500)}
+if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,f);else f();function f(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(e){}a.remove()}};
+var a=document.getElementById('apkBtn');if(a&&location.protocol!=='file:')fetch('downloads/D7-Music-AI-PRO.apk',{method:'HEAD'}).then(function(r){if(!r.ok)throw 0}).catch(function(){a.removeAttribute('href');a.classList.add('s');a.textContent='APK niedostępny';});})();
+</script>
+</body></html>

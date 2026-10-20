@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head><script src="js/d7-token.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06070b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="D7 DJ" />
+  <meta name="description" content="D7 DJ · PRO8 Fluid — Pioneer-style decks (hot cues, loops, SYNC, BEAT FX), Kali radio, MilkDrop visuals and main bot Daniel (chat + voice, offline + online sync) · Daniel Dydo · Kraków" />
+  <meta name="sx-version" content="43" />
+  <meta name="sx-build" content="D7 DJ PRO8 Fluid" />
+  <meta property="og:title" content="D7 DJ · PRO8 Fluid" />
+  <meta property="og:description" content="PRO8 decks + Kali radio + MilkDrop + bot Daniel (chat + voice) · Daniel Dydo · Kraków" />
+  <meta property="og:image" content="icons/icon-512.png" />
+  <link rel="icon" href="favicon.ico" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+  <title>KALI LIVE · D7 DJ · PRO8 Fluid</title>
+  <link rel="stylesheet" href="css/special-x.css?v=51" />
+  <link rel="stylesheet" href="css/pro8.css?v=51" />
+  <link rel="stylesheet" href="css/d7-chat.css?v=51" />
+</head>
+<body data-mode="kali">
+  <div class="sx" id="sx-app">
+    <header class="sx-top">
+      <div class="sx-brand">
+        <img src="icons/bot-d-shark.png" alt="" draggable="false" />
+        <h1>D7 DJ <span>· Daniel Dydo</span></h1>
+        <span class="sx-badge" title="D7 DJ · PRO8 Fluid · v43 — decki PRO8 + czat/głos Daniel (zbudowane na X7S v41 / X71)">D7 · PRO8 Fluid · v43</span>
+      </div>
+      <div class="sx-chips">
+        <span class="sx-chip" id="sx-chip-beat" title="Źródło beatu dla wizualizacji"><span class="dot" id="sx-beat-dot"></span><span id="sx-beat-label">BEAT · 128</span></span>
+        <span class="sx-chip" id="sx-chip-radio" title="Kali radio"><span class="dot"></span><span id="sx-radio-chip">RADIO · OFF</span></span>
+        <span class="sx-chip" id="sx-chip-net" title="Online / offline · kolejka synchronizacji bota Daniel"><span class="dot"></span><span id="sx-net-label">SYNC…</span></span>
+      </div>
+      <div class="sx-actions">
+        <button type="button" class="sx-btn" id="sx-kali-btn" title="Kali radio · start / stop">📻 <span class="lbl">Kali radio</span></button>
+        <button type="button" class="sx-btn cyan" id="sx-fs-btn" title="Pełny ekran (F · double-tap)">⛶ <span class="lbl">Fullscreen</span></button>
+        <button type="button" class="sx-btn" id="sx-opt-btn" title="Opcje — włącz / wyłącz funkcje" aria-haspopup="dialog" aria-controls="sx-opts">⚙ <span class="lbl">Opcje</span></button>
+        <button type="button" class="sx-btn" id="sx-agent-btn" title="Daniel · czat + głos (Bot D)" aria-controls="d7c-panel">🤖 <span class="lbl">Daniel</span></button>
+      </div>
+    </header>
+
+    <main class="sx-main">
+      <section class="sx-stage" id="sx-stage" aria-label="MilkDrop wizualizacja">
+        <canvas id="sx-fallback" aria-hidden="true"></canvas>
+        <canvas id="sx-viz" aria-hidden="true"></canvas>
+        <div class="sx-fallback-note" id="sx-fallback-note" hidden>Tryb lekki · WebGL niedostępny</div>
+        <div class="sx-stage-top">
+          <div class="sx-now" id="sx-now"><b>MILKDROP</b><span id="sx-preset">ładuję…</span></div>
+          <span class="sx-onair" id="sx-onair">● ON AIR</span>
+        </div>
+        <div class="sx-vizbar" id="sx-vizbar">
+          <button type="button" class="sx-btn icon" id="sx-prev" title="Poprzedni preset (←)">◀</button>
+          <button type="button" class="sx-btn" id="sx-rnd" title="Losowy preset (R)">✨ RND</button>
+          <button type="button" class="sx-btn icon" id="sx-next" title="Następny preset (→)">▶</button>
+          <button type="button" class="sx-btn on" id="sx-auto" title="Auto wander w rytm">AUTO</button>
+          <button type="button" class="sx-btn icon" id="sx-fs-btn2" title="Pełny ekran">⛶</button>
+        </div>
+        <span class="sx-hint">double-click = fullscreen</span>
+        <button type="button" class="sx-fs-exit" id="sx-fs-exit" title="Wyjdź z pełnego ekranu (Esc)" aria-label="Wyjdź z pełnego ekranu">✕</button>
+      </section>
+
+    </main>
+
+    <section class="sx-dock" id="sx-dock">
+      <div class="sx-card sx-radio">
+        <div class="sx-card-head"><h3>Kali radio · YouTube</h3><span class="sx-tag" id="sx-radio-tag">gotowe</span></div>
+        <div class="sx-yt" id="sx-yt" title="YouTube player"><div id="sx-yt-player"></div></div>
+        <div class="sx-radio-body">
+          <div class="sx-radio-title" id="sx-radio-title">KALI LIVE RADIO · 24/7</div>
+          <div class="sx-radio-sub" id="sx-radio-sub">Jeden tap: radio + wizualizacja w rytm</div>
+          <div class="sx-row">
+            <button type="button" class="sx-btn sm primary" id="sx-radio-play">▶ Play</button>
+            <button type="button" class="sx-btn sm" id="sx-radio-stop">⏹ Stop</button>
+            <button type="button" class="sx-btn sm" id="sx-tap" title="Tap tempo — stuknij w rytm, viz złapie BPM">TAP</button>
+          </div>
+          <select class="sx-select" id="sx-radio-src" aria-label="Źródło YouTube"></select>
+          <input class="sx-range" id="sx-radio-vol" type="range" min="0" max="100" value="90" aria-label="Głośność radia" />
+        </div>
+      </div>
+
+      <div class="sx-card sx-deck p8-deck" data-deck="A" aria-label="Deck A · PRO8 CDJ">
+        <div class="sx-card-head"><span class="sx-deckname">A</span><span class="sx-track">PRO8 · ładuję…</span><span class="sx-bpm">— BPM</span></div>
+      </div>
+
+      <div class="sx-card sx-mixer">
+        <div class="sx-card-head"><h3>DJM · Mixer</h3><span class="sx-tag">PRO8</span></div>
+        <div class="sx-stack">
+          <div class="p8-mixer-ch"></div>
+          <span class="sx-label">Crossfader</span>
+          <input class="sx-range" id="sx-xfade" type="range" min="0" max="100" value="50" aria-label="Crossfader" />
+          <div class="sx-xf-labels"><span>A</span><span>B</span></div>
+          <span class="sx-label">Master</span>
+          <input class="sx-range" id="sx-master" type="range" min="0" max="100" value="90" aria-label="Master" />
+          <div class="sx-fx">
+            <span class="sx-label">Filter <small>LP ◀ ▶ HP</small></span>
+            <div class="sx-row">
+              <input class="sx-range cyan" id="sx-filter" type="range" min="0" max="100" value="50" aria-label="Filter (lowpass / highpass)" />
+              <button type="button" class="sx-btn sm" id="sx-echo" title="Echo w tempo (kropkowana ósemka)">ECHO</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sx-card sx-deck p8-deck" data-deck="B" aria-label="Deck B · PRO8 CDJ">
+        <div class="sx-card-head"><span class="sx-deckname">B</span><span class="sx-track">PRO8 · ładuję…</span><span class="sx-bpm">— BPM</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="sx-opts" id="sx-opts" role="dialog" aria-label="Opcje D7 DJ" hidden>
+    <div class="sx-opts-head"><h3>⚙ Opcje</h3><span class="sx-opts-sub">PRO8 Fluid · pełne opcje</span><button type="button" class="sx-btn icon sm" id="sx-opts-close" aria-label="Zamknij opcje">✕</button></div>
+    <div class="sx-opts-list" id="sx-opts-list"></div>
+    <div class="sx-opts-actions">
+      <button type="button" class="sx-btn sm" id="sx-opt-cache">💾 Zapisz utwory offline</button>
+      <button type="button" class="sx-btn sm" id="sx-opt-clear">🧹 Wyczyść czat</button>
+      <button type="button" class="sx-btn sm" id="sx-opt-reset">↺ Domyślne</button>
+    </div>
+    <div class="sx-opts-info" id="sx-opts-info"></div>
+  </div>
+
+  <div class="sx-toast" id="sx-toast" role="status" aria-live="polite"></div>
+
+  <div class="sx-gate" id="sx-gate" role="button" tabindex="0" aria-label="Start D7 DJ">
+    <div class="sx-gate-card">
+      <img src="icons/bot-d-shark.png" alt="" draggable="false" />
+      <h2>D7 <span>DJ</span></h2>
+      <p id="sx-gate-sub">Jeden tap: Kali radio 24/7 + MilkDrop na pełnym ekranie + Daniel (czat + głos)</p>
+      <button type="button" class="sx-start" id="sx-start">▶ START</button>
+      <div class="sx-gate-list"><span>📻 Kali radio</span><span>✨ MilkDrop 1080p</span><span>🤖 Daniel (Bot D)</span><span>🎧 PRO8 decks (CDJ)</span><span>🎤 Czat + głos</span><span>⛶ Fullscreen</span><span>🔄 Offline + sync</span><span>⚙ Pełne opcje</span></div>
+    </div>
+  </div>
+
+  <script src="libs/butterchurn.min.js?v=51"></script>
+  <script src="libs/butterchurnPresets.min.js?v=51"></script>
+  <script src="libs/butterchurnPresetsExtra.min.js?v=51"></script>
+  <script>
+  /* Safety net: START always dismisses the gate even if the main script failed to load */
+  (function () {
+    function bail() {
+      if (window.__sxReady) return;
+      var g = document.getElementById('sx-gate');
+      if (g) g.className += ' gone';
+    }
+    var b = document.getElementById('sx-start');
+    var g = document.getElementById('sx-gate');
+    function arm() { setTimeout(bail, 2500); }
+    if (b) b.addEventListener('click', arm);
+    if (g) g.addEventListener('click', arm);
+  })();
+  </script>
+  <script src="js/d7-answers.js?v=51"></script>
+  <script src="js/bot-d.js?v=51"></script>
+  <script src="js/pro8.js?v=51"></script>
+  <script src="js/d7-chat.js?v=51"></script>
+  <script src="js/special-x.js?v=51"></script>
+<script src="js/d7-radio.js?v=51" defer></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>D7 SuperApp</title>
+<style>body{margin:0;background:radial-gradient(circle at 30% 0,#1a0830,#07070b 60%);color:#d8d8ea;font:16px system-ui;display:grid;place-items:center;min-height:100vh;text-align:center}
+h1{letter-spacing:4px;background:linear-gradient(90deg,#00f0ff,#ff2bd6);-webkit-background-clip:text;color:transparent}input{width:90%;padding:12px;border-radius:9px;border:1px solid #333;background:#0b0b14;color:#fff}
+button{margin:8px;padding:12px 18px;border:0;border-radius:9px;font-weight:700;background:linear-gradient(90deg,#00f0ff,#ff2bd6)}.k{opacity:.6;font-size:13px}</style></head>
+<body><div style="max-width:420px;padding:20px"><h1>D7 · SUPER APP</h1><p id="m">Szukam serwera botów…</p>
+<div id="o" style="display:none"><p class="k">Serwer offline lub zmienił się adres tunelu. Wklej aktualny liveUrl (z CURRENT_TUNNEL_URL.txt / QR):</p>
+<input id="u" placeholder="https://….trycloudflare.com"><br><button onclick="D7App.setUrl(document.getElementById('u').value.trim());m.textContent='Łączę…'">Połącz</button><button onclick="D7App.retry();m.textContent='Ponawiam…'">⟳ Ponów</button>
+<p class="k">Tryb offline: boty niedostępne bez serwera.</p></div></div>
+<script>var m=document.getElementById('m');if(location.hash!='#loading'){m.textContent='⚠ Brak połączenia';document.getElementById('o').style.display='';try{document.getElementById('u').value=D7App.lastUrl()}catch(e){}}</script></body></html>

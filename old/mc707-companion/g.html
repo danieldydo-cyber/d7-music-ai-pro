@@ -1,0 +1,76 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="js/d7-token.js"></script><title>😈 Super Bot G · D7</title>
+<style>
+body{margin:0;background:radial-gradient(#200,#000);color:#fdd;font-family:system-ui}header{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#300}
+h1{margin:0;font-size:20px;color:#f44}#hl{font-size:13px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#888;margin-right:4px}
+nav button,button{background:#511;color:#fcc;border:1px solid #f44;border-radius:8px;padding:8px 10px;margin:3px;cursor:pointer}section{display:none;padding:10px}section.on{display:block}
+#av{display:block;margin:0 auto;width:220px;height:220px}#mouth{transition:none}#log{height:38vh;overflow:auto;background:#100;border-radius:10px;padding:8px;font-size:14px;white-space:pre-wrap}
+.u{color:#9cf}.b{color:#fdd;margin:6px 0}.row{display:flex;gap:6px}input{flex:1;background:#200;color:#fff;border:1px solid #a33;border-radius:8px;padding:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}.room{background:#200;border:1px solid #633;border-radius:10px;padding:8px;font-size:13px;min-height:90px}
+.tool a{display:block;color:#f88;margin:6px 0;font-size:16px}#err{color:#fa0;font-size:12px}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}#av{animation:bob 2.4s infinite}
+</style></head><body>
+<header><h1>😈 Super Bot G</h1><div id="hl"><span class="dot" id="hd"></span><span id="ht">sprawdzam…</span></div></header>
+<nav><button data-s="chat">💬 Czat</button><button data-s="multi">🏠 Multiroom</button><button data-s="tool">🧰 Multitool</button></nav>
+<section id="chat" class="on">
+<svg id="av" viewBox="0 0 200 200"><path d="M50 60 L35 10 L75 45Z M150 60 L165 10 L125 45Z" fill="#c11"/><circle cx="100" cy="105" r="70" fill="#d22"/>
+<ellipse id="eL" cx="75" cy="90" rx="12" ry="14" fill="#ff0"/><ellipse id="eR" cx="125" cy="90" rx="12" ry="14" fill="#ff0"/><circle cx="75" cy="92" r="5"/><circle cx="125" cy="92" r="5"/>
+<path d="M60 70 L90 80 M140 70 L110 80" stroke="#300" stroke-width="5"/><ellipse id="mouth" cx="100" cy="140" rx="30" ry="4" fill="#300"/><path d="M85 138 l5 8 l5 -8 M105 138 l5 8 l5 -8" fill="#fff" opacity=".9"/></svg>
+<div id="log"></div><div class="row"><input id="q" placeholder="Zapytaj Super Bota G (wszystkie boty naraz)…"><button id="mic">🎤</button><button id="go">▶</button></div>
+<label><input type="checkbox" id="tts" checked style="flex:0"> mów (pl-PL)</label> <span id="err"></span></section>
+<section id="multi"><p>Pokoje botów — każdy pokój pokazuje ostatnią odpowiedź bota z rundy. Wspólny log: <span id="slog">…</span></p><div class="grid" id="rooms"></div></section>
+<section id="tool" class="tool"><a href="radio-gen.html">📻 Radio + 🎛 Generator techno</a><a href="super.html">🧠 Bot D „Daniel” (D7 SUPER)</a><a href="index.html">🎧 D7 DJ</a>
+<a href="downloads/D7-SuperBotG-v53.apk">📱 APK Super Bot G v53</a><a href="sync-manifest.json" target="_blank">📄 Manifest (status)</a><div id="mst"></div></section>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+/* self-repair: show errors, count them */
+var ERR=0;window.addEventListener('error',function(e){ERR++;$('err').textContent='⚠ błąd JS naprawiony/zignorowany: '+(e.message||'').slice(0,80)});
+window.addEventListener('unhandledrejection',function(e){ERR++;$('err').textContent='⚠ '+String(e.reason).slice(0,80)});
+function jfetch(u,o,ms,tries){tries=tries==null?2:tries;var c=new AbortController(),t=setTimeout(function(){c.abort()},ms||15000);o=o||{};o.signal=c.signal;
+ return fetch(u,o).then(function(r){clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).catch(function(e){clearTimeout(t);if(tries>0)return new Promise(function(res){setTimeout(res,800)}).then(function(){return jfetch(u,o,ms,tries-1)});throw e})}
+document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.id==b.dataset.s)})}});
+/* health indicator */
+function health(){var eps=['api/status','api/bot-mesh','api/bots'],ok=0;Promise.all(eps.map(function(e){return jfetch(e,{},6000,0).then(function(){ok++},function(){})})).then(function(){
+ $('hd').style.background=ok==eps.length?'#2e2':ok?'#fa0':'#e22';$('ht').textContent='API '+ok+'/'+eps.length+(navigator.onLine?'':' · offline')+(ERR?' · błędy JS: '+ERR:'')})}
+health();setInterval(health,30000);
+/* auto-reload when the page is broken (>=5 JS errors), at most once per 10 min */
+setInterval(function(){if(ERR>=5){var l=+sessionStorage.getItem('g.rl')||0;if(Date.now()-l>600000){sessionStorage.setItem('g.rl',Date.now());location.reload()}}},10000);
+/* avatar: mouth + blink */
+var talking=0;(function anim(){requestAnimationFrame(anim);var m=$('mouth');m.setAttribute('ry',talking?4+Math.abs(Math.sin(performance.now()/70))*16:4)})();
+setInterval(function(){['eL','eR'].forEach(function(i){$(i).setAttribute('ry',1);setTimeout(function(){$(i).setAttribute('ry',14)},150)})},4000);
+function speak(t){if(!$('tts').checked||!window.speechSynthesis){talking=1;setTimeout(function(){talking=0},1500);return}
+ try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t.replace(/\[[^\]]*\]/g,'').slice(0,400));u.lang='pl-PL';u.pitch=.6;u.onstart=function(){talking=1};u.onend=u.onerror=function(){talking=0};speechSynthesis.speak(u);setTimeout(function(){if(!speechSynthesis.speaking)talking=0},20000)}catch(e){talking=0}}
+function out(c,t){var d=document.createElement('div');d.className=c;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=1e9}
+/* offline knowledge + web fallback */
+var OFF=[[/bpm|tempo/,'BPM to uderzenia na minutę: house ~120–128, techno ~125–140, hip-hop ~80–100.'],[/radio/,'Radio jest w Multitool → „Radio + Generator”.'],[/mc.?707|roland/,'Roland MC-707 to groovebox z 8 ścieżkami, samplerem i efektami; D7 DJ jest jego aplikacją-towarzyszem.'],[/(czesc|cześć|hej|siema)/,'Siema Daniel! 😈 Tu Super Bot G — pytaj, odpowiem głosem całego zespołu botów.']];
+function offline(q){var t=q.toLowerCase();for(var i=0;i<OFF.length;i++)if(OFF[i][0].test(t))return OFF[i][1];return null}
+function web(q){var t=q.replace(/[?!.]+$/,'');return jfetch('https://pl.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=1&srsearch='+encodeURIComponent(t),{},7000,0).then(function(j){var h=j.query.search[0];if(!h)throw 0;return jfetch('https://pl.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(h.title.replace(/ /g,'_')),{},7000,0)}).then(function(p){if(!p.extract)throw 0;return p.extract.slice(0,500)+' [Wikipedia]'})
+ .catch(function(){return jfetch('https://api.duckduckgo.com/?format=json&no_html=1&q='+encodeURIComponent(t),{},7000,0).then(function(d){if(!d.AbstractText)throw 0;return d.AbstractText.slice(0,500)+' [DuckDuckGo]'})})}
+/* merge all bots (server brain /api/chat bot=all) */
+var ACK=/^\s*(\[[^\]]*\]\s*)?(odbieram|ok|okej|received|roger|ack)[\s.!…]*$/i,LOCAL=/Tryb lokalny|chwilowo niedostępne/;
+function strip(a){return String(a||'').replace(/^\s*(\[[^\]]{1,40}\]\s*)+/,'').trim()}
+var LAST={};
+function merge(replies){var seen={},u=[];replies.forEach(function(r){var t=strip(r.answer);if(!t||ACK.test(r.answer)||LOCAL.test(t)||t.length<12)return;var k=t.toLowerCase().slice(0,60);if(seen[k]){seen[k].by.push(r.bot);return}seen[k]={t:t,by:[r.bot],src:r.source};u.push(seen[k])});
+ u.sort(function(a,b){return b.by.length-a.by.length||b.t.length-a.t.length});return u}
+function ask(q){out('u','Ty: '+q);out('b','😈 G: pytam wszystkie boty…');
+ var mesh=jfetch('api/bot-mesh',{},6000,1).then(function(j){return j.peers||[]},function(){return[]});
+ var all=jfetch('api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({q:q,bot:'all',lang:'pl'})},90000,0).then(function(j){return j.replies||[]})
+  .catch(function(){return jfetch('api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({q:q,bot:'megabot',lang:'pl'})},40000,1).then(function(j){return[j]},function(){return[]})});
+ return Promise.all([mesh,all]).then(function(r){var peers=r[0],reps=r[1];reps.forEach(function(x){LAST[x.bot]=strip(x.answer)});rooms(peers);
+  var u=merge(reps),txt;
+  if(u.length){txt=u[0].t+'\n— zgoda: '+u[0].by.join(', ')+' ('+(u[0].src||'?')+') · boty: '+reps.length+' · mesh: '+peers.length+' peerów'+(u[1]?'\n➕ '+u[1].by.join(', ')+': '+u[1].t.slice(0,250):'');return txt}
+  var o=offline(q);if(o)return o+' [offline]';return web(q).catch(function(){return 'Nie wiem tego na pewno — boty i wyszukiwarka nie dały odpowiedzi. Spróbuj inaczej sformułować.'})})
+ .then(function(t){out('b','😈 G: '+t);speak(t);log(q,t)},function(e){var o=offline(q)||'Błąd połączenia — działam offline.';out('b','😈 G: '+o);speak(o)})}
+function log(q,t){jfetch('api/chat-log',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:'super-bot-g',text:'Q: '+q+'\nA: '+t.slice(0,1500),tags:['learn','help']})},8000,0)
+ .then(function(){$('slog').textContent='zapisano we wspólnym logu ✅'},function(){$('slog').textContent='wspólny log wymaga tokenu właściciela (d7.tok) — zapis lokalny';try{var L=JSON.parse(localStorage.getItem('g.log')||'[]');L.push({q:q,t:t,at:Date.now()});localStorage.setItem('g.log',JSON.stringify(L.slice(-100)))}catch(e){}})}
+function rooms(peers){jfetch('api/bots',{},6000,1).then(function(j){var bs=j.bots||[];$('rooms').innerHTML='';bs.forEach(function(b){var d=document.createElement('div');d.className='room';d.innerHTML='<b></b><br><i></i><p></p>';d.querySelector('b').textContent='🚪 '+b.name;d.querySelector('i').textContent=b.role||'';d.querySelector('p').textContent=(LAST[b.name]||'—').slice(0,160);$('rooms').appendChild(d)});
+ peers.slice(0,30).forEach(function(p){var d=document.createElement('div');d.className='room';d.textContent='🌐 '+(p.name||p.id)+' · '+(p.status||'?')+' (mesh)';$('rooms').appendChild(d)})},function(){$('rooms').textContent='Nie mogę pobrać listy botów (API offline).'})}
+rooms([]);jfetch('api/bot-mesh',{},6000,1).then(function(j){rooms(j.peers||[])},function(){});
+jfetch('sync-manifest.json',{},8000,1).then(function(m){$('mst').textContent='liveUrl: '+m.liveUrl+' · APK: '+(m.apkUrl||'?')},function(){$('mst').textContent='manifest niedostępny'});
+$('go').onclick=function(){var q=$('q').value.trim();if(q){$('q').value='';ask(q)}};$('q').onkeydown=function(e){if(e.key=='Enter')$('go').onclick()};
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){$('mic').disabled=true;$('mic').title='Rozpoznawanie mowy nieobsługiwane w tej przeglądarce'}
+else $('mic').onclick=function(){try{var r=new SR();r.lang='pl-PL';r.onresult=function(e){var t=e.results[0][0].transcript;ask(t)};r.onerror=function(e){$('err').textContent='🎤 '+e.error};r.start();$('mic').textContent='🔴'; r.onend=function(){$('mic').textContent='🎤'}}catch(e){$('err').textContent='🎤 '+e.message}};
+out('b','😈 Siema! Jestem Super Bot G — łączę wszystkie boty D7. Pisz albo mów 🎤.');
+})();
+</script></body></html>

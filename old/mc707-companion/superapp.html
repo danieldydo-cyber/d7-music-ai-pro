@@ -1,0 +1,125 @@
+<!doctype html><html lang="pl"><head><script src="js/d7-token.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Super G 🐲 · D7 DJ</title><link rel="manifest" href="/superapp.webmanifest"><meta name="theme-color" content="#ff2a00"><link rel="icon" href="/icons/icon-192.png"><link rel="apple-touch-icon" href="/icons/icon-180.png">
+<style>
+:root{--bg:#070405;--p:#140a0cdd;--f:#ff4d00;--r:#ff1744;--y:#ffc400;--n:#00f0ff;--g:#39ff88;--t:#f1e3df}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#3a0606,var(--bg) 60%);color:var(--t);font:15px/1.45 'Segoe UI',system-ui,sans-serif;min-height:100vh}
+#viz{position:fixed;inset:0;z-index:-1;opacity:.45}
+.top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:10px 16px;background:#070405cc;backdrop-filter:blur(6px);border-bottom:1px solid #3a1010;position:sticky;top:0;z-index:5}
+h1{margin:0;font-size:24px;letter-spacing:3px;background:linear-gradient(90deg,var(--y),var(--f),var(--r));-webkit-background-clip:text;color:transparent}
+.big{display:inline-flex;align-items:center;gap:10px;font-size:19px;font-weight:800;padding:14px 24px;border-radius:14px;color:#000;text-decoration:none;background:linear-gradient(90deg,var(--y),var(--f),var(--r));box-shadow:0 0 22px #ff4d0099;animation:pulse 2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 38px #ff1744cc;transform:scale(1.03)}}
+.btn{background:linear-gradient(90deg,var(--f),var(--r));border:0;color:#000;font-weight:700;padding:9px 14px;border-radius:10px;cursor:pointer}
+.g{background:#24100f;color:var(--t);border:1px solid #4a1a16;font-weight:500}.g.on{border-color:var(--f);box-shadow:0 0 10px #ff4d0077}
+main{display:grid;grid-template-columns:1fr 330px;gap:14px;padding:14px;max-width:1300px;margin:auto}@media(max-width:950px){main{grid-template-columns:1fr}}
+.c{background:var(--p);border:1px solid #3a1414;border-radius:14px;padding:13px;margin-bottom:14px;box-shadow:0 0 22px #ff1a0014}
+h2{font-size:12px;letter-spacing:3px;color:var(--y);margin:0 0 8px;text-transform:uppercase}
+.hero{display:flex;gap:14px;align-items:center}
+#drag{width:130px;height:130px;flex:none;filter:drop-shadow(0 0 14px #ff4d00aa);animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-7px)}}
+#drag .wing{transform-origin:60px 70px;animation:flap 1.6s ease-in-out infinite}#drag .wing.r{animation-delay:.05s;transform-origin:100px 70px}
+@keyframes flap{50%{transform:rotate(-14deg) scaleY(.9)}}#drag .wing.r{animation-name:flapr}@keyframes flapr{50%{transform:rotate(14deg) scaleY(.9)}}
+#drag .eye{animation:blink 4s infinite}@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}#drag .eye{transform-box:fill-box;transform-origin:center}
+#drag .fire{opacity:0;transform-origin:80px 102px;transition:opacity .2s}#drag.talk .fire{opacity:1;animation:fire .25s infinite alternate}@keyframes fire{to{transform:scale(1.25,1.4)}}
+#drag.talk .jaw{animation:jaw .18s infinite alternate}@keyframes jaw{to{transform:translateY(4px)}}
+#drag.think{animation:float .8s ease-in-out infinite}
+#say{font-size:15px;min-height:44px}
+#log{height:46vh;overflow:auto;display:flex;flex-direction:column;gap:9px;scroll-behavior:smooth}
+.msg{padding:9px 12px;border-radius:13px;max-width:86%;white-space:pre-wrap;word-break:break-word;animation:pop .35s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.96)}}
+.u{align-self:flex-end;background:#3a1010;border-bottom-right-radius:3px}.a{background:#1a0c0b;border-left:3px solid var(--f);border-bottom-left-radius:3px}
+.typing span{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--f);animation:dot 1s infinite}.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes dot{50%{transform:translateY(-6px);opacity:.4}}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-top:8px}#grid .msg{max-width:none;font-size:13px}
+form{display:flex;gap:6px;margin-top:9px}input,select{background:#0e0606;border:1px solid #4a1a16;color:var(--t);padding:11px;border-radius:10px}input#q{flex:1;font-size:16px}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.k{opacity:.65;font-size:12px}a{color:var(--y);text-decoration:none}a:hover{color:var(--f)}
+.tool{font-size:12px;padding:6px 9px}td{padding:2px 4px;font-size:13px}#qr{width:130px;border-radius:8px}
+#adm{display:none;margin-top:8px}.gear{background:none;border:0;color:#888;font-size:18px;cursor:pointer}
+.rec{background:var(--r)!important;color:#000}
+</style></head><body><a href="g.html" id="g-banner" style="display:block;text-align:center;background:linear-gradient(90deg,#a00,#f40);color:#fff;font:bold 22px system-ui;padding:14px;text-decoration:none">😈 Super Bot G — gadający awatar, wszystkie boty, Multiroom, Multitool</a><canvas id="viz"></canvas>
+<div class="top"><h1>🐲 SUPER G · D7 DJ</h1>
+<div class="row"><a class="big" href="/D7-SuperApp.apk" download>📱 POBIERZ APK</a><button class="btn" id="inst" style="display:none">⬇ Zainstaluj web</button><button class="gear" id="gear" title="Ustawienia admina">⚙</button></div></div>
+<main><div>
+<div class="c"><div class="hero">
+<svg id="drag" viewBox="0 0 160 160" aria-label="Super G smok">
+ <defs><radialGradient id="sk" cx=".5" cy=".4"><stop offset="0" stop-color="#ff6a2a"/><stop offset="1" stop-color="#8a0d0d"/></radialGradient></defs>
+ <path class="wing" d="M58 72 L8 30 L22 66 L4 70 L30 86 Z" fill="#5a0a0a" stroke="#ff4d00" stroke-width="2"/>
+ <path class="wing r" d="M102 72 L152 30 L138 66 L156 70 L130 86 Z" fill="#5a0a0a" stroke="#ff4d00" stroke-width="2"/>
+ <path d="M58 40 L48 8 L68 34 Z M102 40 L112 8 L92 34 Z" fill="#ffc400"/>
+ <ellipse cx="80" cy="72" rx="34" ry="36" fill="url(#sk)" stroke="#ff4d00" stroke-width="2"/>
+ <ellipse class="eye" cx="66" cy="64" rx="7" ry="5" fill="#ffee58"/><ellipse class="eye" cx="94" cy="64" rx="7" ry="5" fill="#ffee58"/>
+ <rect x="65" y="61" width="2" height="7" fill="#000"/><rect x="93" y="61" width="2" height="7" fill="#000"/>
+ <g class="jaw"><path d="M60 86 Q80 104 100 86 Q80 96 60 86" fill="#2a0303" stroke="#ff4d00"/><path d="M68 89 l3 5 l3-5 M86 89 l3 5 l3-5" fill="#fff"/></g>
+ <text x="80" y="58" text-anchor="middle" font-size="16" font-weight="900" fill="#ffc400">G</text>
+ <g class="fire"><path d="M70 100 Q80 140 90 100 Q85 118 80 108 Q75 118 70 100" fill="#ffc400"/><path d="M74 102 Q80 128 86 102 Q80 112 74 102" fill="#ff1744"/></g>
+</svg>
+<div style="flex:1"><b style="font-size:18px;color:var(--y)">Super G</b> <span class="k">główny gadający bot · połączony z całym zespołem</span><div id="say" class="k">Siema! Jestem Super G 🐲 — pisz albo mów (🎤). Odpowiadam na głos.</div>
+<div class="row" style="margin-top:6px"><button class="g on" id="m-g">🐲 Super G</button><button class="g" id="m-all">⚡ Wszystkie boty</button><select id="who" class="g"></select>
+<label class="k"><input type="checkbox" id="relay"> + relay do prawdziwych botów</label>
+<label class="k"><input type="checkbox" id="tts" checked> 🔊 głos</label><select id="lang"><option value="">auto</option><option value="pl">PL</option><option value="en">EN</option><option value="de">DE</option><option value="uk">UK</option></select></div></div></div>
+<div id="log" style="margin-top:10px"></div><div id="grid"></div>
+<form id="f"><button type="button" class="g" id="mic" title="Mów">🎤</button><input id="q" placeholder="Napisz do Super G… (pomoc = komendy)" autocomplete="off"><button class="btn">Wyślij 🔥</button></form>
+<div class="row" style="margin-top:6px"><button class="g tool" id="exp">⬇ Eksport czatu</button><button class="g tool" id="clr">🗑 Wyczyść</button></div></div>
+<div class="c"><h2>Aktywność</h2><canvas id="act" height="80" style="width:100%"></canvas><div class="k" id="stats"></div></div>
+</div><div>
+<div class="c"><h2>🧰 Multi-narzędzia</h2><div id="acts" class="row"></div><div class="k" style="margin-top:6px">🔒 = tylko admin (⚙)</div>
+<div id="adm"><input id="tok" type="password" placeholder="token admina" style="width:100%"><div class="k" id="tokst"></div></div></div>
+<div class="c"><h2>🎛 Aplikacje DJ</h2><div id="links" class="row"></div></div>
+<div class="c"><h2>Status</h2><table id="st"></table><div class="row" style="margin-top:8px"><img id="qr" alt="QR" loading="lazy"><div class="k">QR → otwórz na telefonie</div></div></div>
+<div class="c"><h2>Beat</h2><div class="row"><b id="bpm" style="font-size:22px;color:var(--f)">128</b> BPM <button class="g" id="tap">TAP</button><button class="g" id="micviz">🎧 Mic</button></div></div>
+<div class="c"><h2>Relay → boty</h2><div id="rl" class="k" style="max-height:150px;overflow:auto"></div></div>
+</div></main>
+<script>
+var $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+var LOOK={superg:['🐲','#ff4d00'],supergrok:['🦾','#00f0ff'],d:['🎧','#ff2bd6'],superbotd:['🎛','#7b2cff'],autofix:['🛠','#39ff88'],dragon:['🐉','#ff6a00'],'77':['7️⃣','#ffd400'],dargonmoon:['🌙','#9ad0ff'],supercharger:['⚡','#ff3355'],superd:['👑','#ffffff'],megabot:['🤖','#c0c0ff']};
+var look=id=>LOOK[String(id).split('-')[0]]||['🤖','#999'];
+var mode='g',bot='superg',BOTS=[],H=JSON.parse(localStorage.getItem('sg.hist')||'[]'),D=$('drag');
+$('tts').checked=localStorage.getItem('sg.tts')!=='0';$('tts').onchange=()=>localStorage.setItem('sg.tts',$('tts').checked?'1':'0');
+function saveH(){H=H.slice(-400);localStorage.setItem('sg.hist',JSON.stringify(H))}
+function bubble(m){var d=document.createElement('div');if(m.r=='u'){d.className='msg u';d.textContent=m.t}else{var L=look(m.id);d.className='msg a';d.style.borderColor=L[1];d.innerHTML=`<b style="color:${L[1]}">${L[0]} ${esc(m.b)}</b> <span class=k>${esc(m.s||'')}</span><br>${esc(m.t)}`}return d}
+function add(m,keep){var b=bubble(m);$('log').appendChild(b);$('log').scrollTop=1e9;if(!keep){H.push(m);saveH()}return b}
+H.slice(-60).forEach(m=>add(m,1));
+function typing(){var d=document.createElement('div');d.className='msg a typing';d.innerHTML='<span></span><span></span><span></span>';$('log').appendChild(d);$('log').scrollTop=1e9;return d}
+function setMode(m){mode=m;$('m-g').classList.toggle('on',m=='g');$('m-all').classList.toggle('on',m=='all');$('who').style.display=m=='g'?'':'none';$('grid').innerHTML=''}
+$('m-g').onclick=()=>setMode('g');$('m-all').onclick=()=>setMode('all');
+fetch('/api/bots').then(r=>r.json()).then(j=>{BOTS=j.bots;$('who').innerHTML=j.bots.map(b=>`<option value="${b.id}">${look(b.id)[0]} ${esc(b.name)}</option>`).join('');$('who').value='superg';bot='superg'});
+$('who').onchange=()=>bot=$('who').value;
+var PAGES=[['app','🎛 App ONE'],['index','🎚 DJ Pro Fly'],['super','🚀 D7 SUPER'],['classic','💿 Classic'],['pro-dj','🎧 Pro DJ'],['kali-live','📻 Kali Live'],['kali','📡 Kali'],['d','🤖 Bot D'],['public-chat','💬 Public chat'],['v51','🧪 v51'],['radio-gen','📻 Radio Gen']];
+$('links').innerHTML=PAGES.map(p=>`<a class="g tool" style="border-radius:8px" href="/${p[0]}.html">${p[1]}</a>`).join('');
+var VO=null;function voice(){if(VO||!window.speechSynthesis)return VO;var l=($('lang').value||'pl');VO=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith(l))||null;return VO}
+function speak(t){$('say').textContent=t.replace(/^\[[^\]]*\]\s*/,'').slice(0,240);if(!$('tts').checked||!window.speechSynthesis){D.classList.add('talk');setTimeout(()=>D.classList.remove('talk'),1500);return}
+ var u=new SpeechSynthesisUtterance(t.replace(/\[[^\]]*\]|[🐲🔥⚙✅⛔]/g,'').slice(0,500));var l=$('lang').value||'pl';u.lang=l=='pl'?'pl-PL':l;var v=voice();if(v)u.voice=v;u.pitch=.7;u.rate=1.05;
+ u.onstart=()=>D.classList.add('talk');u.onend=u.onerror=()=>D.classList.remove('talk');speechSynthesis.cancel();speechSynthesis.speak(u)}
+function ask(q,b){return fetch('/api/brain',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({q:q,bot:b,lang:$('lang').value||undefined})}).then(r=>r.json())}
+function toMsg(x,id){return{r:'a',b:x.bot,id:id||x.bot,t:x.answer,s:(x.source||'')+(x.action?' · ⚙ '+x.action+(x.actionOk?' ✅':' ⛔'):'')}}
+$('f').onsubmit=e=>{e.preventDefault();var q=$('q').value.trim();if(!q)return;$('q').value='';add({r:'u',t:q});D.classList.add('think');
+ if($('relay').checked&&!/^[@\/]/.test(q))ask('@all '+q,'superg').then(x=>add(toMsg(x,'superg'))).then(rl);
+ if(mode=='all'){$('grid').innerHTML=BOTS.map(b=>`<div class="msg a" id="g-${b.id}" style="border-color:${look(b.id)[1]}"><b>${look(b.id)[0]} ${esc(b.name)}</b><div class="typing"><span></span><span></span><span></span></div></div>`).join('');
+  var n=0;BOTS.forEach(b=>ask(q,b.id).then(x=>{var m=toMsg(x,b.id);$('g-'+b.id).replaceWith(bubble(m));H.push(m);saveH();if(b.id=='superg')speak(x.answer)}).catch(()=>{}).finally(()=>{if(++n==BOTS.length)D.classList.remove('think')}));return}
+ var t=typing();ask(q,bot).then(x=>{t.remove();var m=toMsg(x,bot);add(m);speak(x.answer);st();rl()}).catch(()=>{t.remove();add({r:'a',b:'Super G',id:'superg',t:'⚠ Chwilowy brak połączenia — samonaprawa działa, spróbuj za moment.'},1)}).finally(()=>D.classList.remove('think'))};
+$('exp').onclick=()=>{var b=new Blob([H.map(m=>(m.r=='u'?'Ty':m.b)+': '+m.t).join('\n\n')],{type:'text/plain'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='super-g-chat-'+new Date().toISOString().slice(0,16)+'.txt';a.click()};
+$('clr').onclick=()=>{if(confirm('Wyczyścić historię na tym urządzeniu?')){H=[];saveH();$('log').innerHTML=''}};
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)$('mic').style.display='none';else{var rec=new SR();rec.onresult=e=>{$('q').value=e.results[0][0].transcript;$('f').requestSubmit()};rec.onend=()=>$('mic').classList.remove('rec');
+ $('mic').onclick=()=>{rec.lang=($('lang').value||'pl')=='pl'?'pl-PL':$('lang').value;$('mic').classList.add('rec');try{rec.start()}catch(e){}}}
+$('gear').onclick=()=>{var a=$('adm');a.style.display=a.style.display=='block'?'none':'block'};
+var T=$('tok');T.value=localStorage.getItem('d7.tok')||'';function ts(){$('tokst').textContent=T.value?'token zapisany ✅':'brak (niepotrzebny do zwykłego użycia)'}ts();T.onchange=()=>{localStorage.setItem('d7.tok',T.value.trim());ts()};
+var CMD={help:'pomoc',status:'status',liveurl:'liveurl',bots:'boty',pages:'strony',health:'health',restart_server:'restart serwer',restart_tunnel:'restart tunel',logs:'logi',mem_clear_last:'usuń ostatni',broadcast:'do wszystkich: ',mem_save:'zapamiętaj: ',mem_search:'szukaj: ',relay:'@all '};
+fetch('/api/actions').then(r=>r.json()).then(j=>{$('acts').innerHTML=j.actions.map(a=>`<button class="g tool" title="${esc(a.desc)}" data-a="${a.name}">${a.name}${a.needsToken?' 🔒':''}</button>`).join('');
+ document.querySelectorAll('#acts button').forEach(b=>b.onclick=()=>{var c=CMD[b.dataset.a];$('q').value=c;if(/[: ]$/.test(c))$('q').focus();else $('f').requestSubmit()})});
+function rl(){fetch('/api/relay').then(r=>r.json()).then(j=>{$('rl').innerHTML=(j.queue||[]).slice(-12).reverse().map(e=>`<div>${e.at.slice(11,16)} → <b>${esc(e.to)}</b> [${e.status}] ${esc(e.text.slice(0,70))}</div>`).join('')||'pusta kolejka'}).catch(()=>{})}
+var TUN='',MESH='?',HB=[];
+function st(){fetch('/api/status').then(r=>r.json()).then(s=>{if(s.tunnel!=TUN){TUN=s.tunnel;$('qr').src='/api/qr.svg?'+Date.now()}
+ $('st').innerHTML=[['Boty',s.online.length+' online ✅'],['Mózg',s.backend],['Pamięć',(s.memoryBytes/1024).toFixed(0)+' KB · '+s.messages+' msg'],['Mesh',MESH+' peerów'],['Link',`<a href="${s.tunnel}">${s.tunnel.replace('https://','').slice(0,30)}…</a>`]].map(r=>`<tr><td class=k>${r[0]}</td><td>${r[1]}</td></tr>`).join('');HB.push(1)}).catch(()=>{$('st').innerHTML='<tr><td>⏳ samonaprawa w toku…</td></tr>';HB.push(0)})}
+function act(){fetch('/api/activity').then(r=>r.json()).then(j=>{var c=$('act'),x=c.getContext('2d');c.width=c.clientWidth;var P=j.points,mx=Math.max(1,...P.map(p=>p.n)),w=c.width/Math.max(P.length,1);x.clearRect(0,0,c.width,80);
+ P.forEach((p,i)=>{var h=p.n/mx*64;var g=x.createLinearGradient(0,80-h,0,80);g.addColorStop(0,'#ffc400');g.addColorStop(1,'#ff1744');x.fillStyle=g;x.fillRect(i*w+1,78-h,w-2,h)});
+ HB.slice(-60).forEach((v,i)=>{x.fillStyle=v?'#39ff88':'#ff1744';x.fillRect(c.width-(60-i)*4,0,3,5)});$('stats').textContent='Wiadomości na bota: '+Object.entries(j.stats).map(e=>e[0]+' '+e[1]).join(' · ')})}
+st();rl();
+var idle=window.requestIdleCallback||(f=>setTimeout(f,600));
+idle(()=>{fetch('/api/bot-mesh').then(r=>r.json()).then(j=>{MESH=(j.peers||j.bots||[]).length}).catch(()=>{});act();setInterval(()=>{if(!document.hidden){st();act()}},20000);setInterval(()=>{if(!document.hidden)rl()},30000);startViz()});
+var bpm=128,taps=[],an=null,data=null;$('tap').onclick=()=>{var t=performance.now();taps=taps.filter(x=>t-x<3000);taps.push(t);if(taps.length>1){bpm=Math.round(60000/((taps[taps.length-1]-taps[0])/(taps.length-1)));$('bpm').textContent=bpm}};
+$('micviz').onclick=()=>navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{var A=new AudioContext();an=A.createAnalyser();an.fftSize=128;data=new Uint8Array(an.frequencyBinCount);A.createMediaStreamSource(s).connect(an);$('micviz').textContent='🎧 ON'}).catch(()=>alert('Brak dostępu do mikrofonu'));
+function startViz(){var V=$('viz'),vx=V.getContext('2d'),last=0;function fr(t){requestAnimationFrame(fr);if(document.hidden||t-last<33)return;last=t;
+ if(V.width!=innerWidth)V.width=innerWidth;if(V.height!=innerHeight)V.height=innerHeight;var ph=(t/(60000/bpm))%1,k=Math.pow(1-ph,4);if(an){an.getByteFrequencyData(data);k=data.slice(0,6).reduce((a,b)=>a+b,0)/1530}
+ vx.fillStyle='#07040522';vx.fillRect(0,0,V.width,V.height);var cx=V.width/2,cy=V.height*.35;
+ for(var i=0;i<36;i++){var a=i/36*Math.PI*2+t/5000,r=100+k*170+(an?data[i%data.length]/2:Math.sin(t/300+i)*18);vx.strokeStyle=i%2?'#ff4d0044':'#ffc40033';vx.lineWidth=2+k*4;vx.beginPath();vx.moveTo(cx+Math.cos(a)*70,cy+Math.sin(a)*70);vx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);vx.stroke()}}requestAnimationFrame(fr)}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/superapp-sw.js').catch(()=>{});var dp;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('inst').style.display=''});$('inst').onclick=()=>dp&&dp.prompt();
+</script></body></html>
