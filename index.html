@@ -27,8 +27,14 @@ select,input,textarea{background:#000;color:var(--t);border:1px solid var(--b);p
 .ok{border-left:3px solid var(--a)}.bad{border-left:3px solid var(--a2)}
 .hero{display:flex;gap:16px;flex-wrap:wrap;align-items:center}#chat{height:220px;overflow-y:auto;background:#000;border:1px solid var(--b);border-radius:6px;padding:8px;margin-bottom:8px;font-size:14px}#chat p{margin:4px 0}#chat .u{color:#aaa;text-align:right}#chat .z{color:var(--a)}.ant{animation:bl 1.5s infinite alternate}@keyframes bl{to{opacity:.2}}#alien{animation:fl 3s ease-in-out infinite}@keyframes fl{50%{transform:translateY(-6px)}}.bot{cursor:pointer}
 #log{font-family:monospace;font-size:12px;color:#888}
+body{font-family:Inter,"Segoe UI",system-ui,sans-serif;line-height:1.5}h1{letter-spacing:2px}h2,h3{letter-spacing:.5px}
+header{position:sticky;top:0;z-index:9;background:rgba(7,7,10,.94);backdrop-filter:blur(6px)}
+.stbar{font-size:11px;color:#999;margin-top:4px}.stbar .light{width:8px;height:8px;margin:0 4px 0 6px}
+.aggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;margin-top:12px;max-height:70vh;overflow-y:auto}
+.ag{background:#0c0c14;border:1px solid var(--b);border-radius:6px;padding:6px 8px;cursor:pointer;display:flex;flex-direction:column;font-size:12px}
+.ag:hover{border-color:var(--a)}.ag b{color:var(--t);font-size:12px}.ag small{color:#777}.ag.real{border-color:var(--a2);background:#1a0c16}.ag.real b{color:var(--a2)}
 </style></head><body>
-<header><h1>D7 ▸ MUSIC AI <span style="color:var(--a2)">PRO</span></h1><nav><button data-t="start" class="on">Start</button><button data-t="gen">Generator</button><button data-t="decks">Decki</button><button data-t="viz">Wizualizer</button><button data-t="ai">AI Hub</button><button data-t="boty">Boty</button><button data-t="old">Starsze wersje</button><button data-t="sys">Self-check</button><button data-t="superg">😈 Super G</button></nav></header>
+<header><div><h1>D7 Music AI <span style="color:var(--a2)">PRO</span> · DJ DaX</h1><div id="stBar" class="stbar">…</div></div><nav><button data-t="start" class="on">Start</button><button data-t="agenci">🤖 777 Agentów</button><button data-t="gen">Generator</button><button data-t="decks">Decki</button><button data-t="viz">Wizualizer</button><button data-t="ai">AI Hub</button><button data-t="boty">Boty</button><button data-t="old">Starsze wersje</button><button data-t="sys">Self-check</button><button data-t="superg">😈 Super G</button></nav></header>
 <main>
 <section id="start" class="tab on">
 <div class="card hero" id="heroBox"><svg id="alien" viewBox="0 0 200 220" width="180" height="200">
@@ -61,6 +67,10 @@ select,input,textarea{background:#000;color:var(--t);border:1px solid var(--b);p
 </div>
 <p style="font-size:12px;color:#888;margin-top:8px">Kwotę i tytuł ustalasz w banku (BLIK na telefon). To nie jest automatyczna bramka płatności.</p></div>
 </section>
+<section id="agenci" class="tab"><div class="card"><h2 style="margin-top:0;color:var(--a)">777 Agentów AI / SI</h2>
+<p class="mono">Prawdziwi członkowie zespołu (podświetleni) + generowane SI komórki. Kliknij agenta — Zorg go przedstawi.</p>
+<div class="row"><input id="agQ" placeholder="Szukaj agenta lub roli…" style="flex:1"><select id="agF"><option value="all">Wszyscy</option><option value="real">Tylko zespół</option><option value="si">Tylko SI komórki</option></select><span class="mono" id="agCnt"></span></div>
+<div id="agGrid" class="aggrid"></div></div></section>
 <section id="gen" class="tab">
 <div class="card"><div class="row">
 <label>Gatunek<select id="genre"><option value="techno">Techno</option><option value="psytrance">Psytrance</option><option value="house">House</option><option value="ambient">Ambient</option><option value="hiphop">Hip-hop</option></select></label>
@@ -109,7 +119,7 @@ select,input,textarea{background:#000;color:var(--t);border:1px solid var(--b);p
 <div class="cards" id="gLights" style="margin-top:14px"></div><p class="mono" id="gInfo"></p></div></section>
 <section id="sys" class="tab"><div class="card"><h3 style="margin-top:0">🩺 Self-check</h3>
 <p class="mono">Strażnik łapie błędy JavaScript, przypisuje je do modułu i automatycznie resetuje zepsuty moduł.</p>
-<button class="btn" id="selfTest">Uruchom test modułów</button> <button class="btn g" id="crashTest">Symuluj awarię wizualizera</button>
+<button class="btn" id="selfTest">Uruchom test modułów</button> <button class="btn s" id="fixNow">🛠 Napraw teraz</button> <button class="btn g" id="crashTest">Symuluj awarię wizualizera</button>
 <div id="modStat" class="cards" style="margin-top:12px"></div><pre id="errLog" class="mono" style="white-space:pre-wrap"></pre></div></section>
 <section id="ai" class="tab">
 <div class="card"><h3 style="margin-top:0">Darmowe narzędzia AI do muzyki</h3><div class="cards">
@@ -246,4 +256,5 @@ if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch((
 if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,f);else f();function f(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(e){}a.remove()}};
 var a=document.getElementById('apkBtn');if(a&&location.protocol!=='file:')fetch('downloads/D7-Music-AI-PRO.apk',{method:'HEAD'}).then(function(r){if(!r.ok)throw 0}).catch(function(){a.removeAttribute('href');a.classList.add('s');a.textContent='APK niedostępny';});})();
 </script>
+<script src="agents.js"></script>
 </body></html>
